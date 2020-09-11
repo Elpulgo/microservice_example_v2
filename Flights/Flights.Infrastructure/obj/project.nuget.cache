@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "dgSpecHash": "IAe8M89TBRJ7L6hiMVAfVlZ71wY0cgU5JvrGkLoAqAW4I8eBHSZm4q0EnRNoct7MuB9NpqQdPVpBd1UzwPSG9g==",
+  "success": true,
+  "projectFilePath": "/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/Flights.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/home/oscar/.nuget/packages/dapper/2.0.35/dapper.2.0.35.nupkg.sha512",
+    "/home/oscar/.nuget/packages/dapper.contrib/2.0.35/dapper.contrib.2.0.35.nupkg.sha512",
+    "/home/oscar/.nuget/packages/microsoft.bcl.asyncinterfaces/1.0.0/microsoft.bcl.asyncinterfaces.1.0.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/npgsql/4.1.4/npgsql.4.1.4.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.buffers/4.5.0/system.buffers.4.5.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.memory/4.5.3/system.memory.4.5.3.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.numerics.vectors/4.5.0/system.numerics.vectors.4.5.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.reflection.emit/4.7.0/system.reflection.emit.4.7.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.reflection.emit.lightweight/4.7.0/system.reflection.emit.lightweight.4.7.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.runtime.compilerservices.unsafe/4.6.0/system.runtime.compilerservices.unsafe.4.6.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.text.encodings.web/4.6.0/system.text.encodings.web.4.6.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.text.json/4.6.0/system.text.json.4.6.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/system.threading.tasks.extensions/4.5.2/system.threading.tasks.extensions.4.5.2.nupkg.sha512"
+  ],
+  "logs": []
+}

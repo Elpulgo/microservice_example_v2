@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/Flights.Core.csproj": {}
+  },
+  "projects": {
+    "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/Flights.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/Flights.Core.csproj",
+        "projectName": "Flights.Core",
+        "projectPath": "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/Flights.Core.csproj",
+        "packagesPath": "/home/oscar/.nuget/packages/",
+        "outputPath": "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/oscar/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.401/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
