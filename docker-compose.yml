@@ -1,0 +1,75 @@
+version: '3.5'
+
+services:
+    api-gateway:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}api-gateway
+        ports:
+            - "5000:80"
+        build:
+            context: .
+            dockerfile: ./api-gateway/Dockerfile
+        networks: microservice
+
+    flights-api:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}flights-api
+        build:
+            context: .
+            dockerfile: ./Flights/Flights.API/Dockerfile
+
+    flights-processor:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}flights-processor
+        build:
+            context: .
+            dockerfile: ./Flights/Flights.Processor/Dockerfile
+    
+    eventstore:
+        image: eventstore/eventstore:5.0.8-xenial
+        restart: always
+        networks: microservice
+        environment:
+            - EVENTSTORE_CLUSTER_SIZE=1
+            - EVENTSTORE_INT_TCP_PORT=1112
+            - EVENTSTORE_EXT_TCP_PORT=1113
+            - EVENTSTORE_INT_HTTP_PORT=2112
+            - EVENTSTORE_EXT_HTTP_PORT=2113
+        ports:
+        - "1112:1112"
+        - "1113:1113"
+        - "2112:2112"
+        - "2113:2113"
+    
+    db-flights:
+        image: postgres/postgres:13-alpine
+        restart: always
+        networks: microservice
+        environment: 
+            - POSTGRES_USER=flights_user
+            - POSTGRES_PASSWORD=flights_user_pass
+            - POSTGRES_DB=flights
+        volumes:
+            - "${HOME}/postgres/flights:/var/lib/postgresql/data"
+        ports:
+            - "5432:5432"
+        command: -p 5432
+    
+    db-passengers:
+        image: postgres/postgres:13-alpine
+        restart: always
+        networks: microservice
+        environment: 
+            - POSTGRES_USER=passengers_user
+            - POSTGRES_PASSWORD=passengers_user_pass
+            - POSTGRES_DB=passengers
+        volumes:
+            - "${HOME}/postgres/passengers:/var/lib/postgresql/data"
+        ports:
+            - "5433:5433"
+        command: -p 5433
+    
+
+networks:
+    microservice:
+        driver: bridge
