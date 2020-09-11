@@ -24,6 +24,7 @@ namespace Shared.Infrastructure
 
         public async Task<T> GetByIdAsync(TId id)
         {
+            EnsureNotNullOrEmpty(id);
             using var connection = m_Context.Instance;
             var result = await connection.QueryFirstOrDefaultAsync<T>($"SELECT * FROM {m_Context.TableName} WHERE Id=@Id", new { Id = id });
             return result ?? throw new KeyNotFoundException($"{m_Context.TableName} with id [{id}] could not be found.");
@@ -31,6 +32,7 @@ namespace Shared.Infrastructure
 
         public async Task DeleteAsync(T entity)
         {
+            EnsureNotNull(entity);
             using var connection = m_Context.Instance;
             var result = await connection.DeleteAsync<T>(entity);
             if (!result)
@@ -41,6 +43,7 @@ namespace Shared.Infrastructure
 
         public async Task DeleteByIdAsync(TId id)
         {
+            EnsureNotNullOrEmpty(id);
             using var connection = m_Context.Instance;
             var result = await connection.ExecuteAsync($"DELETE FROM {m_Context.TableName} WHERE Id=@Id", new { Id = id });
             if (result == 0)
@@ -51,6 +54,7 @@ namespace Shared.Infrastructure
 
         public async Task<T> InsertAsync(T entity)
         {
+            EnsureNotNull(entity);
             using var connection = m_Context.Instance;
             await connection.InsertAsync<T>(entity);
             return entity;
@@ -58,8 +62,30 @@ namespace Shared.Infrastructure
 
         public async Task<bool> UpdateAsync(T entity)
         {
+            EnsureNotNull(entity);
             using var connection = m_Context.Instance;
             return await connection.UpdateAsync<T>(entity);
+        }
+
+        private void EnsureNotNull(T param)
+        {
+            if (param == null)
+            {
+                throw new ArgumentNullException(param.GetType().Name);
+            }
+        }
+
+        private void EnsureNotNullOrEmpty(TId id)
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException(id.GetType().Name);
+            }
+
+            if (id.Id == Guid.Empty)
+            {
+                throw new ArgumentException($"{id.GetType().Name} can't be empty.");
+            }
         }
     }
 }
