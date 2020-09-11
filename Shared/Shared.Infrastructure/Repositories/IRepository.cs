@@ -4,7 +4,6 @@ using Shared.Core;
 
 namespace Shared.Infrastructure
 {
-
     public interface IRepository<T>
     {
         Task DeleteAsync(T entity);
