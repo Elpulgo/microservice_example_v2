@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "yZruwpTiD/aWTpP3Ef5Oi4ke9+DpR+wC4K3WnDjXsGqIAekH4Nv0RmIf6aGfgtpq3lzEd0rsVwUJLDC33dWo2Q==",
+  "success": true,
+  "projectFilePath": "/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/Flights.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/oscar/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "/home/oscar/.nuget/packages/netstandard.library/2.0.3/netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

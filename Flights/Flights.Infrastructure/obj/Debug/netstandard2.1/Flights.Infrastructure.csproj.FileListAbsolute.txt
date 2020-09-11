@@ -1,0 +1,16 @@
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Flights.Infrastructure.deps.json
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Flights.Infrastructure.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Flights.Infrastructure.pdb
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Flights.Core.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Shared.Core.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Shared.Infrastructure.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Flights.Core.pdb
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Shared.Infrastructure.pdb
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/bin/Debug/netstandard2.1/Shared.Core.pdb
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.csprojAssemblyReference.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.AssemblyInfoInputs.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.AssemblyInfo.cs
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.csproj.CoreCompileInputs.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.csproj.CopyComplete
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Infrastructure/obj/Debug/netstandard2.1/Flights.Infrastructure.pdb

@@ -1,0 +1,9 @@
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/bin/Debug/netstandard2.0/Flights.Core.deps.json
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/bin/Debug/netstandard2.0/Flights.Core.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/bin/Debug/netstandard2.0/Flights.Core.pdb
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.csprojAssemblyReference.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.AssemblyInfoInputs.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.AssemblyInfo.cs
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.csproj.CoreCompileInputs.cache
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.dll
+/home/oscar/projects/microservice_example_v2/Flights/Flights.Core/obj/Debug/netstandard2.0/Flights.Core.pdb
