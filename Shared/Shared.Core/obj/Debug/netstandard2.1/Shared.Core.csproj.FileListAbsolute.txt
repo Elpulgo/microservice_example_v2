@@ -1,0 +1,9 @@
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/bin/Debug/netstandard2.1/Shared.Core.deps.json
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/bin/Debug/netstandard2.1/Shared.Core.dll
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/bin/Debug/netstandard2.1/Shared.Core.pdb
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.csprojAssemblyReference.cache
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.AssemblyInfoInputs.cache
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.AssemblyInfo.cs
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.csproj.CoreCompileInputs.cache
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.dll
+/home/oscar/projects/microservice_example_v2/Shared/Shared.Core/obj/Debug/netstandard2.1/Shared.Core.pdb
