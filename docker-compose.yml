@@ -57,9 +57,10 @@ services:
         environment: 
             - POSTGRES_USER=flights_user
             - POSTGRES_PASSWORD=flights_user_pass
-            - POSTGRES_DB=flights
+            - POSTGRES_DB=Flights
         volumes:
             - "${HOME}/postgres/flights:/var/lib/postgresql/data"
+            - ./DbScript/flights_init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "5432:5432"
         command: -p 5432
