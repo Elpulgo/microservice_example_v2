@@ -1,0 +1,8 @@
+
+*.dat
+
+**/bin
+**/obj
+*/bin
+*/obj
+**/.vscode
