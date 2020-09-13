@@ -1,18 +1,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Shared.Core;
 using Dapper;
-using Dapper.Contrib.Extensions;
 using System;
+using Shared.Core.Models;
+using Dommel;
+using Shared.Infrastructure.Extensions;
 
 namespace Shared.Infrastructure
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : Entity
     {
         private readonly PostgreContext m_Context;
+        private readonly string m_TableName;
 
-        public Repository(PostgreContext context)
+        public Repository(PostgreContext context, string tableName)
         {
+            m_TableName = tableName;
             m_Context = context;
         }
 
@@ -22,33 +25,33 @@ namespace Shared.Infrastructure
             return (await connection.GetAllAsync<T>()).AsList();
         }
 
-        public async Task<T> GetByIdAsync(TId id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             EnsureNotNullOrEmpty(id);
             using var connection = m_Context.Instance;
-            var result = await connection.QueryFirstOrDefaultAsync<T>($"SELECT * FROM {m_Context.TableName} WHERE Id=@Id", new { Id = id });
-            return result ?? throw new KeyNotFoundException($"{m_Context.TableName} with id [{id}] could not be found.");
+            var result = await connection.QueryFirstOrDefaultAsync<T>($@"SELECT * FROM {m_TableName} WHERE id=@Id", new { Id = id });
+            return result ?? throw new KeyNotFoundException($"{m_TableName} with id [{id}] could not be found.");
         }
 
         public async Task DeleteAsync(T entity)
         {
             EnsureNotNull(entity);
             using var connection = m_Context.Instance;
-            var result = await connection.DeleteAsync<T>(entity);
-            if (!result)
+            var result = await connection.ExecuteAsync($@"DELETE FROM {m_TableName} WHERE id=@Id", new { Id = entity.Id });
+            if (result == 0)
             {
-                throw new InvalidOperationException($"{m_Context.TableName} failed to delete entity [{entity}].");
+                throw new InvalidOperationException($"{m_TableName} failed to delete entity with id [{entity.Id}], don't exist.");
             }
         }
 
-        public async Task DeleteByIdAsync(TId id)
+        public async Task DeleteByIdAsync(Guid id)
         {
             EnsureNotNullOrEmpty(id);
             using var connection = m_Context.Instance;
-            var result = await connection.ExecuteAsync($"DELETE FROM {m_Context.TableName} WHERE Id=@Id", new { Id = id });
+            var result = await connection.ExecuteAsync($@"DELETE FROM {m_TableName} WHERE id=@Id", new { Id = id });
             if (result == 0)
             {
-                throw new InvalidOperationException($"{m_Context.TableName} failed to delete entity with id [{id}], don't exist.");
+                throw new InvalidOperationException($"{m_TableName} failed to delete entity with id [{id}], don't exist.");
             }
         }
 
@@ -60,32 +63,51 @@ namespace Shared.Infrastructure
             return entity;
         }
 
+        // Special handling of update, since not working with Dapper.Dommel for some reason.. probably some id issue
+        // since I use UUID as Id in my solution, and Dapper.Dommel don't properly track it.
+        // Get some issue in PostgreSql where it says the syntax is wrong when using 'connection.UpdateAsync<T>(entity)'
+        // and there is not much documentation regarding Dapper.Dommel... 
         public async Task<bool> UpdateAsync(T entity)
         {
             EnsureNotNull(entity);
             using var connection = m_Context.Instance;
-            return await connection.UpdateAsync<T>(entity);
+
+            var command = GetUpdateCommand(entity);
+            var result = await connection.ExecuteAsync(command, entity);
+            return result == 1;
         }
 
         private void EnsureNotNull(T param)
         {
             if (param == null)
-            {
                 throw new ArgumentNullException(param.GetType().Name);
-            }
         }
 
-        private void EnsureNotNullOrEmpty(TId id)
+        private void EnsureNotNullOrEmpty(Guid id)
         {
             if (id == null)
-            {
                 throw new ArgumentNullException(id.GetType().Name);
+
+            if (id == Guid.Empty)
+                throw new ArgumentException($"{id.GetType().Name} can't be empty.");
+        }
+
+        private string GetUpdateCommand(T entity)
+        {
+            var command = $"UPDATE {m_TableName} SET ";
+
+            foreach (var property in entity.GetType().GetProperties())
+            {
+                if (property.Name == "Id")
+                    continue;
+
+                command += $"{property.Name.ToSnakeCase()} = @{property.Name},";
             }
 
-            if (id.Id == Guid.Empty)
-            {
-                throw new ArgumentException($"{id.GetType().Name} can't be empty.");
-            }
+            command = command.Remove(command.Length - 1);
+            command += $" WHERE Id = @Id";
+
+            return command;
         }
     }
 }

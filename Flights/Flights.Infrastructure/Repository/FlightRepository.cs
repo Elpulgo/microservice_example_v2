@@ -5,7 +5,7 @@ namespace Flights.Infrastructure
 {
     public class FlightRepository : Repository<Flight>, IFlightRepository
     {
-        public FlightRepository(PostgreContext context) : base(context)
+        public FlightRepository(PostgreContext context) : base(context, Flight.Table)
         {
 
         }

@@ -5,24 +5,21 @@ namespace Shared.Infrastructure
 {
     public class PostgreContext
     {
-        private readonly string m_ConnectionName;
+        private readonly string m_ConnectionString;
 
         public NpgsqlConnection Instance => ConnectToPostgres();
 
-        public string TableName { get; }
-
-        public PostgreContext(string connectionName, string tableName)
+        public PostgreContext(string connectionString)
         {
-            m_ConnectionName = connectionName;
-            TableName = tableName;
+            m_ConnectionString = connectionString;
         }
 
         private NpgsqlConnection ConnectToPostgres()
         {
-            if (string.IsNullOrEmpty(m_ConnectionName))
-                throw new ArgumentNullException(nameof(m_ConnectionName));
+            if (string.IsNullOrEmpty(m_ConnectionString))
+                throw new ArgumentNullException(nameof(m_ConnectionString));
 
-            return new NpgsqlConnection(m_ConnectionName);
+            return new NpgsqlConnection(m_ConnectionString);
         }
     }
 }
