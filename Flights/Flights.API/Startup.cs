@@ -33,7 +33,9 @@ namespace Flights.API
 
 
             services.AddSingleton<PostgreContext>(sp => new PostgreContext(postgreConnectionString));
-            services.AddTransient<IFlightRepository, FlightRepository>();
+            services.AddTransient<IFlightReadRepository, FlightReadRepository>();
+            services.AddTransient<IFlightWriteRepository, FlightWriteRepository>();
+
             services.AddControllers();
         }
 
@@ -52,28 +54,30 @@ namespace Flights.API
 
 
             // TEST
-            var repo = app.ApplicationServices.GetRequiredService<IFlightRepository>();
+            var repoRead = app.ApplicationServices.GetRequiredService<IFlightReadRepository>();
+            var repoWrite = app.ApplicationServices.GetRequiredService<IFlightWriteRepository>();
+
             try
             {
 
                 // System.Threading.Thread.Sleep(10000);
                 // Console.WriteLine("Slepts 10 secs.. will try");
 
-                var result = repo.InsertAsync(new Flight(
+                var result = repoWrite.InsertAsync(new Flight(
                     "Malmö_111",
                     "Copenhagen_111",
                     "SAS123_111",
                     FlightStatus.Boarded)
                 ).Result;
 
-                var result2 = repo.InsertAsync(new Flight(
+                var result2 = repoWrite.InsertAsync(new Flight(
                     "Malmö_222",
                     "Copenhagen_222",
                     "SAS123_222",
                     FlightStatus.Boarded)
                 ).Result;
 
-                var result3 = repo.InsertAsync(new Flight(
+                var result3 = repoWrite.InsertAsync(new Flight(
                     "Malmö_333",
                     "Copenhagen_333",
                     "SAS123_333",
@@ -82,10 +86,10 @@ namespace Flights.API
 
                 Console.WriteLine($"Successfully added 3 flights!");
 
-                var flight = repo.GetByIdAsync(result.Id).Result;
+                var flight = repoRead.GetByIdAsync(result.Id).Result;
                 Console.WriteLine($"Successfully fetched flight with id: {flight.Id} and flight number {flight.FlightNumber}");
 
-                var allFlights = repo.GetAllAsync().Result;
+                var allFlights = repoRead.GetAllAsync().Result;
 
                 foreach (var f in allFlights)
                 {
@@ -94,24 +98,24 @@ namespace Flights.API
 
                 var idToDelete = result.Id;
 
-                repo.DeleteByIdAsync(result.Id).Wait();
+                repoWrite.DeleteByIdAsync(result.Id).Wait();
 
                 Console.WriteLine($"Successfully deleted flight with id: {idToDelete}");
 
                 var idToDelete3 = result3.Id;
 
-                repo.DeleteAsync(result3).Wait();
+                repoWrite.DeleteAsync(result3).Wait();
                 Console.WriteLine($"Successfully deleted flight with id: {idToDelete3} by deleting entity..");
 
                 result2.FlightNumber = "BA_4444";
-                var success = repo.UpdateAsync(result2).Result;
+                var success = repoWrite.UpdateAsync(result2).Result;
 
                 Console.WriteLine($"Updated flight? {success}");
 
                 Console.WriteLine($"################\n");
 
 
-                allFlights = repo.GetAllAsync().Result;
+                allFlights = repoRead.GetAllAsync().Result;
 
                 foreach (var f in allFlights)
                 {
