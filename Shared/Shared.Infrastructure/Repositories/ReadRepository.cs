@@ -4,6 +4,7 @@ using Dapper;
 using System;
 using Shared.Core.Models;
 using Dommel;
+using System.Linq.Expressions;
 
 namespace Shared.Infrastructure
 {
@@ -14,6 +15,12 @@ namespace Shared.Infrastructure
 
         public ReadRepository(PostgreContext context, string tableName)
         {
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentNullException(nameof(tableName));
+
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
             m_TableName = tableName;
             m_Context = context;
         }
@@ -32,13 +39,20 @@ namespace Shared.Infrastructure
             return result ?? throw new KeyNotFoundException($"{m_TableName} with id [{id}] could not be found.");
         }
 
+        public async Task<IReadOnlyList<T>> SelectAsync(Expression<Func<T, bool>> predicate)
+        {
+            using var connection = m_Context.Instance;
+            var result = await connection.SelectAsync(predicate);
+            return result.AsList();
+        }
+
         private void EnsureNotNullOrEmpty(Guid id)
         {
             if (id == null)
-                throw new ArgumentNullException(id.GetType().Name);
+                throw new ArgumentNullException(nameof(id));
 
             if (id == Guid.Empty)
-                throw new ArgumentException($"{id.GetType().Name} can't be empty.");
+                throw new ArgumentException($"{nameof(id)} can't be empty.");
         }
     }
 }

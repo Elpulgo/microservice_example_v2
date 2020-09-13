@@ -14,6 +14,12 @@ namespace Shared.Infrastructure
 
         public WriteRepository(PostgreContext context, string tableName)
         {
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentNullException(nameof(tableName));
+
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
             m_TableName = tableName;
             m_Context = context;
         }
@@ -21,12 +27,7 @@ namespace Shared.Infrastructure
         public async Task DeleteAsync(T entity)
         {
             EnsureNotNull(entity);
-            using var connection = m_Context.Instance;
-            var result = await connection.ExecuteAsync($@"DELETE FROM {m_TableName} WHERE id=@Id", new { Id = entity.Id });
-            if (result == 0)
-            {
-                throw new InvalidOperationException($"{m_TableName} failed to delete entity with id [{entity.Id}], don't exist.");
-            }
+            await DeleteByIdAsync(entity.Id);
         }
 
         public async Task DeleteByIdAsync(Guid id)

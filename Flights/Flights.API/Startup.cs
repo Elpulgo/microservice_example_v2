@@ -52,7 +52,27 @@ namespace Flights.API
             });
 
 
+            // Test(app).Wait();
+            Test2(app).Wait();
 
+        }
+
+        private async Task Test2(IApplicationBuilder app)
+        {
+            // TEST
+            var repoRead = app.ApplicationServices.GetRequiredService<IFlightReadRepository>();
+            var repoWrite = app.ApplicationServices.GetRequiredService<IFlightWriteRepository>();
+
+            var result = await repoRead.SelectAsync((a => a.FlightNumber == "BA_4444"));
+
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Flight: {item.Id} | {item.Destination} | {item.Origin} | {item.Status} | {item.FlightNumber}");
+            }
+        }
+
+        private async Task Test(IApplicationBuilder app)
+        {
             // TEST
             var repoRead = app.ApplicationServices.GetRequiredService<IFlightReadRepository>();
             var repoWrite = app.ApplicationServices.GetRequiredService<IFlightWriteRepository>();
@@ -63,33 +83,33 @@ namespace Flights.API
                 // System.Threading.Thread.Sleep(10000);
                 // Console.WriteLine("Slepts 10 secs.. will try");
 
-                var result = repoWrite.InsertAsync(new Flight(
+                var result = await repoWrite.InsertAsync(new Flight(
                     "Malmö_111",
                     "Copenhagen_111",
                     "SAS123_111",
                     FlightStatus.Boarded)
-                ).Result;
+                );
 
-                var result2 = repoWrite.InsertAsync(new Flight(
+                var result2 = await repoWrite.InsertAsync(new Flight(
                     "Malmö_222",
                     "Copenhagen_222",
                     "SAS123_222",
                     FlightStatus.Boarded)
-                ).Result;
+                );
 
-                var result3 = repoWrite.InsertAsync(new Flight(
+                var result3 = await repoWrite.InsertAsync(new Flight(
                     "Malmö_333",
                     "Copenhagen_333",
                     "SAS123_333",
                     FlightStatus.Boarded)
-                ).Result;
+                );
 
                 Console.WriteLine($"Successfully added 3 flights!");
 
-                var flight = repoRead.GetByIdAsync(result.Id).Result;
+                var flight = await repoRead.GetByIdAsync(result.Id);
                 Console.WriteLine($"Successfully fetched flight with id: {flight.Id} and flight number {flight.FlightNumber}");
 
-                var allFlights = repoRead.GetAllAsync().Result;
+                var allFlights = await repoRead.GetAllAsync();
 
                 foreach (var f in allFlights)
                 {
@@ -98,24 +118,24 @@ namespace Flights.API
 
                 var idToDelete = result.Id;
 
-                repoWrite.DeleteByIdAsync(result.Id).Wait();
+                await repoWrite.DeleteByIdAsync(result.Id);
 
                 Console.WriteLine($"Successfully deleted flight with id: {idToDelete}");
 
                 var idToDelete3 = result3.Id;
 
-                repoWrite.DeleteAsync(result3).Wait();
+                await repoWrite.DeleteAsync(result3);
                 Console.WriteLine($"Successfully deleted flight with id: {idToDelete3} by deleting entity..");
 
                 result2.FlightNumber = "BA_4444";
-                var success = repoWrite.UpdateAsync(result2).Result;
+                var success = await repoWrite.UpdateAsync(result2);
 
                 Console.WriteLine($"Updated flight? {success}");
 
                 Console.WriteLine($"################\n");
 
 
-                allFlights = repoRead.GetAllAsync().Result;
+                allFlights = await repoRead.GetAllAsync();
 
                 foreach (var f in allFlights)
                 {
