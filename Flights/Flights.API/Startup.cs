@@ -1,19 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Flights.Application.Handlers;
 using Flights.Core;
 using Flights.Core.Extensions;
 using Flights.Infrastructure;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Shared.Infrastructure;
+using Shared.Infrastructure.Data;
 
 namespace Flights.API
 {
@@ -35,6 +33,13 @@ namespace Flights.API
             services.AddSingleton<PostgreContext>(sp => new PostgreContext(postgreConnectionString));
             services.AddTransient<IFlightReadRepository, FlightReadRepository>();
             services.AddTransient<IFlightWriteRepository, FlightWriteRepository>();
+
+            var eventStoreConnectionString = "tcp://admin:changeit@eventstore:1113";
+
+            services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventStoreConnectionString, "event_flights"));
+            services.AddTransient<IFlightEventStorePublisher, FlightEventStorePublisher>();
+
+            services.AddMediatR(typeof(CreateFlightHandler).GetTypeInfo().Assembly);
 
             services.AddControllers();
         }
