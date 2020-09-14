@@ -1,8 +1,7 @@
-using System;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
+using Shared.Core.Models;
 using Shared.Infrastructure.Data;
 
 namespace Shared.Infrastructure.Events
@@ -16,21 +15,21 @@ namespace Shared.Infrastructure.Events
             m_EventStoreContext = eventStoreContext;
         }
 
-        public async Task Publish(T @event)
+        public async Task Publish(IEventData<T> eventData)
         {
             var streamName = m_EventStoreContext.EventStreamName;
-            var eventType = "some-type";
-            var data = JsonSerializer.SerializeToUtf8Bytes<T>(@event);
-            var metaData = "some-metadata";
+            var eventType = eventData.MetaData.EventType;
+            var data = JsonSerializer.SerializeToUtf8Bytes<T>(eventData.Data);
+            var metaData = JsonSerializer.SerializeToUtf8Bytes<IEventDataMeta>(eventData.MetaData);
 
             var eventPayload = new EventData(
-                Guid.NewGuid(),
+                eventData.EventId,
                 eventType,
                 isJson: true,
                 data: data,
-                metadata: Encoding.UTF8.GetBytes(metaData));
+                metadata: metaData);
 
-            var result = await m_EventStoreContext.Connection.AppendToStreamAsync(
+            var _result = await m_EventStoreContext.Connection.AppendToStreamAsync(
                 streamName,
                 ExpectedVersion.Any,
                 eventPayload);

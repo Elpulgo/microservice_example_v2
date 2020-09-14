@@ -26,10 +26,15 @@ namespace Shared.Infrastructure.Data
 
         private async Task Connect()
         {
-            var eventStoreConnection = EventStoreConnection.Create(m_ConnectionString);
+            var connectionSettings = ConnectionSettings
+                .Create()
+                .DisableTls()
+                .EnableVerboseLogging()
+                .Build();
+
+            var eventStoreConnection = EventStoreConnection.Create(connectionSettings, m_ConnectionString);
             await eventStoreConnection.ConnectAsync();
             m_EventStoreConnection = eventStoreConnection;
-            SubscribeToConnectionEvents();
         }
 
         private void EnsureConnectionParametersIsValid(
