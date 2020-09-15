@@ -43,12 +43,18 @@ services:
             - EVENTSTORE_EXT_TCP_PORT=1113
             - EVENTSTORE_INT_HTTP_PORT=2112
             - EVENTSTORE_EXT_HTTP_PORT=2113
+            - EVENTSTORE_DB=/var/lib/eventstore-data
+            - EVENTSTORE_INDEX=/var/lib/eventstore-index
+            - EVENTSTORE_LOG=/var/log/eventstore
+        volumes:
+            - "${HOME}/eventstore/data:/var/lib/eventstore-data"
+            - "${HOME}/eventstore/index:/var/lib/eventstore-index"
+            - "${HOME}/eventstore/logs:/var/log/eventstore"
         ports:
             - "1112:1112"
             - "1113:1113"
             - "2112:2112"
             - "2113:2113"
-        command: --dev --enable-external-tcp --ext-ip=0.0.0.0 --int-ip=0.0.0.0 --disable-external-tcp-tls
     
     db-flights:
         image: postgres:13-alpine
