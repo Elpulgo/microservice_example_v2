@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
@@ -12,15 +13,19 @@ namespace Shared.Infrastructure.Data
     {
         private readonly Uri m_ConnectionString;
         private readonly string m_EventStreamName;
+        private readonly EventStoreCredentials m_EventStoreCredentials;
         private IEventStoreConnection m_EventStoreConnection;
-        public IEventStoreConnection Connection => m_EventStoreConnection;
+        public IEventStoreConnection Connection => m_EventStoreConnection ?? throw new ArgumentNullException(nameof(m_EventStoreConnection));
         public string EventStreamName => m_EventStreamName;
+        public EventStoreCredentials Credentials => m_EventStoreCredentials;
 
         public EventStoreContext(string connectionString, string eventStreamName)
         {
-            EnsureConnectionParametersIsValid(connectionString, eventStreamName, out Uri connectionStringUri);
+            EventStoreConnectionHelper.EnsureConnectionParametersIsValid(connectionString, eventStreamName, out Uri connectionStringUri);
+            m_EventStoreCredentials = EventStoreConnectionHelper.CreateEventStoreCredentials(connectionString);
             m_ConnectionString = connectionStringUri;
             m_EventStreamName = eventStreamName;
+
             Connect().Wait();
         }
 
@@ -35,23 +40,6 @@ namespace Shared.Infrastructure.Data
             var eventStoreConnection = EventStoreConnection.Create(connectionSettings, m_ConnectionString);
             await eventStoreConnection.ConnectAsync();
             m_EventStoreConnection = eventStoreConnection;
-        }
-
-        private void EnsureConnectionParametersIsValid(
-            string connectionString,
-            string eventStreamName,
-            out Uri connectionStringUri)
-        {
-            if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentNullException(nameof(connectionString));
-
-            if (string.IsNullOrEmpty(eventStreamName))
-                throw new ArgumentNullException(nameof(eventStreamName));
-
-            if (!Uri.TryCreate(connectionString, UriKind.Absolute, out connectionStringUri))
-            {
-                throw new ArgumentException($"Failed to create URI from connectionstring '{connectionString}'");
-            }
         }
 
         private void SubscribeToConnectionEvents()
