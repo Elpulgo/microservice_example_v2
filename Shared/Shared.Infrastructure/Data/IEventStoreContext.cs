@@ -7,5 +7,7 @@ namespace Shared.Infrastructure.Data
         IEventStoreConnection Connection { get; }
 
         string EventStreamName { get; }
+
+        EventStoreCredentials Credentials { get; }
     }
 }

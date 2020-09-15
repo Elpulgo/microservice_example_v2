@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
@@ -12,7 +13,7 @@ namespace Shared.Infrastructure.Events
 
         public EventStorePublisher(IEventStoreContext eventStoreContext)
         {
-            m_EventStoreContext = eventStoreContext;
+            m_EventStoreContext = eventStoreContext ?? throw new ArgumentNullException(nameof(eventStoreContext));
         }
 
         public async Task Publish(IEventData<T> eventData)
