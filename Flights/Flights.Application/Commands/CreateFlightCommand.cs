@@ -1,4 +1,3 @@
-using System;
 using Flights.Application.Responses;
 using Flights.Core;
 using MediatR;

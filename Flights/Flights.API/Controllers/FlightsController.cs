@@ -50,5 +50,13 @@ namespace Flights.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteById([FromBody] DeleteFlightCommand command)
+        {
+            var result = await m_Mediator.Send(command);
+            return Ok(result);
+        }
     }
 }
