@@ -1,5 +1,17 @@
 version: '3.5'
 
+x-EVENTSTORE_CONNECTION: 
+    &EVENTSTORE_CONNECTION
+    EVENTSTORE_CONNECTION=tcp://admin:changeit@eventstore:1113
+
+x-EVENTSTORE_FLIGHT_STREAM_NAME:
+    &EVENTSTORE_FLIGHT_STREAM_NAME
+    EVENTSTORE_STREAM_NAME=event_flights
+
+x-POSTGRES_FLIGHT_DB_CONNECTION:
+    &POSTGRES_FLIGHT_DB_CONNECTION
+    POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
+
 services:
     #api-gateway:
     #    restart: always
@@ -23,9 +35,9 @@ services:
         ports:
             - "80:80"
         environment:
-            - EVENTSTORE_STREAM_NAME=event_flights
-            - EVENTSTORE_CONNECTION=tcp://admin:changeit@eventstore:1113
-            - POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_FLIGHT_DB_CONNECTION
 
     flights-processor:
         restart: always
@@ -39,9 +51,9 @@ services:
             dockerfile: ./Flights/Flights.Processor/Dockerfile
         environment: 
             - EVENTSTORE_SUBSCRIPTION_GROUP_NAME=subscribe_flights
-            - EVENTSTORE_STREAM_NAME=event_flights
-            - EVENTSTORE_CONNECTION=tcp://admin:changeit@eventstore:1113
-            - POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_FLIGHT_DB_CONNECTION
     
     eventstore:
         image: eventstore/eventstore:5.0.8-xenial
