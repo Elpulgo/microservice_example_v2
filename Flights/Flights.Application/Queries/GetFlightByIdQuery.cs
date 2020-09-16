@@ -4,11 +4,11 @@ using Flights.Application.Responses;
 
 namespace Flights.Application.Queries
 {
-    public class GetFlightQueryByIdQuery : IRequest<FlightResponse>
+    public class GetFlightByIdQuery : IRequest<FlightResponse>
     {
         public Guid Id { get; set; }
 
-        public GetFlightQueryByIdQuery(Guid id)
+        public GetFlightByIdQuery(Guid id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
