@@ -9,6 +9,7 @@ namespace Shared.Core.Models
         public Entity(string tableName)
         {
             TableName = tableName;
+            Id = Guid.NewGuid();
         }
 
         public Guid Id { get; set; }

@@ -7,7 +7,7 @@ using Flights.Application.Responses;
 using Flights.Core;
 using Flights.Core.Events;
 using MediatR;
-using Shared.Core.Models;
+using Shared.Core.Constants;
 
 namespace Flights.Application.Handlers
 {
@@ -22,7 +22,7 @@ namespace Flights.Application.Handlers
 
         public async Task<FlightCommandResponse> Handle(CreateFlightCommand request, CancellationToken cancellationToken)
         {
-            var eventData = new FlightEventData(request.Map(), FlightEventType.Create, "Create flight");
+            var eventData = new FlightEventData(request.Map(), EventTypeOperation.Create, "Create flight");
 
             var response = new FlightCommandResponse();
 

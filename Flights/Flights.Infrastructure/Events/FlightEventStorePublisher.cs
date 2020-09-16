@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Flights.Core;
-using Shared.Infrastructure;
 using Shared.Infrastructure.Data;
 using Shared.Infrastructure.Events;
 

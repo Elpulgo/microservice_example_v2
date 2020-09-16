@@ -19,13 +19,13 @@ namespace Shared.Infrastructure.Events
         public async Task Publish(IEventData<T> eventData)
         {
             var streamName = m_EventStoreContext.EventStreamName;
-            var eventType = eventData.MetaData.EventType;
+            var eventType = eventData.MetaData.EventTypeOperation;
             var data = JsonSerializer.SerializeToUtf8Bytes<T>(eventData.Data);
             var metaData = JsonSerializer.SerializeToUtf8Bytes<IEventDataMeta>(eventData.MetaData);
 
             var eventPayload = new EventData(
                 eventData.EventId,
-                eventType,
+                eventType.ToString(),
                 isJson: true,
                 data: data,
                 metadata: metaData);

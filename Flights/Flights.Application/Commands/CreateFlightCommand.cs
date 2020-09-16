@@ -7,7 +7,6 @@ namespace Flights.Application.Commands
 {
     public class CreateFlightCommand : IRequest<FlightCommandResponse>
     {
-        public Guid Id { get; }
         public string Destination { get; set; }
         public string Origin { get; set; }
         public string FlightNumber { get; set; }
@@ -15,7 +14,6 @@ namespace Flights.Application.Commands
 
         public CreateFlightCommand()
         {
-            Id = Guid.NewGuid();
         }
     }
 }
