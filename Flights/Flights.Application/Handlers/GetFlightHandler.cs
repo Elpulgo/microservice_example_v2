@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Flights.Application.Handlers
 {
-    public class GetFlightHandler : IRequestHandler<GetFlightQueryByIdQuery, FlightResponse>
+    public class GetFlightHandler : IRequestHandler<GetFlightByIdQuery, FlightResponse>
     {
         private readonly IFlightReadRepository m_Repository;
 
@@ -17,11 +17,13 @@ namespace Flights.Application.Handlers
             m_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task<FlightResponse> Handle(GetFlightQueryByIdQuery request, CancellationToken cancellationToken)
+        public async Task<FlightResponse> Handle(GetFlightByIdQuery request, CancellationToken cancellationToken)
         {
             var flight = await m_Repository.GetByIdAsync(request.Id);
 
-            // TODO: Use mapper??
+            if (flight == null)
+                return null;
+
             return new FlightResponse()
             {
                 Destination = flight.Destination,
