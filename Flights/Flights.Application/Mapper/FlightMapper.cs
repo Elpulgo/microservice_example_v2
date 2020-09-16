@@ -12,6 +12,18 @@ namespace Flights.Application.Mapper
                 Destination = command.Destination,
                 FlightNumber = command.FlightNumber,
                 Origin = command.Origin,
+                Status = FlightStatus.WaitingForBoarding
+            };
+        }
+
+        public static Flight Map(this UpdateFlightCommand command)
+        {
+            return new Flight()
+            {
+                Id = command.Id,
+                Destination = command.Destination,
+                FlightNumber = command.FlightNumber,
+                Origin = command.Origin,
                 Status = command.Status
             };
         }

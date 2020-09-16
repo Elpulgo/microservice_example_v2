@@ -21,6 +21,8 @@ namespace Flights.API.Controllers
             m_Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
+        #region Commands
+
         [HttpPost]
         [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateFlight([FromBody] CreateFlightCommand command)
@@ -28,6 +30,27 @@ namespace Flights.API.Controllers
             var result = await m_Mediator.Send(command);
             return Ok(result);
         }
+
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteById([FromBody] DeleteFlightCommand command)
+        {
+            var result = await m_Mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Update([FromBody] UpdateFlightCommand command)
+        {
+            var result = await m_Mediator.Send(command);
+            return Ok(result);
+        }
+
+        #endregion
+
+        #region Queries
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(FlightResponse), (int)HttpStatusCode.OK)]
@@ -51,12 +74,6 @@ namespace Flights.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
-        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> DeleteById([FromBody] DeleteFlightCommand command)
-        {
-            var result = await m_Mediator.Send(command);
-            return Ok(result);
-        }
+        #endregion
     }
 }

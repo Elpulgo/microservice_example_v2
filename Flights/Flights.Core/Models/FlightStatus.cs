@@ -4,9 +4,7 @@ namespace Flights.Core
     {
         None = 0,
         WaitingForBoarding = 1,
-        Boarded = 2,
-        OnRoute = 3,
-        Landed = 4,
-        PassengersDisembarked = 5
+        Disembarked = 2,
+        Arrived = 3
     }
 }
