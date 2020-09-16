@@ -1,26 +1,27 @@
 using System;
+using Shared.Core.Constants;
 
 namespace Shared.Core.Models
 {
     public class EventDataMeta : IEventDataMeta
     {
-        public string EventType { get; private set; }
+        public EventTypeOperation EventTypeOperation { get; private set; }
         public string EventName { get; private set; }
         public DateTime Timestamp { get; private set; }
 
-        public EventDataMeta(string eventType, string eventName)
+        public EventDataMeta(EventTypeOperation eventTypeOperation, string eventName)
         {
-            Validate(eventType, eventName);
+            Validate(eventTypeOperation, eventName);
 
-            EventType = eventType;
+            EventTypeOperation = eventTypeOperation;
             EventName = eventName;
             Timestamp = DateTime.UtcNow;
         }
 
-        private void Validate(string eventType, string eventName)
+        private void Validate(EventTypeOperation eventTypeOperation, string eventName)
         {
-            if (string.IsNullOrEmpty(eventType))
-                throw new ArgumentNullException(nameof(eventType));
+            if (eventTypeOperation == EventTypeOperation.None)
+                throw new ArgumentException($"{nameof(eventTypeOperation)} can't be None.");
 
             if (string.IsNullOrEmpty(eventName))
                 throw new ArgumentNullException(eventName);

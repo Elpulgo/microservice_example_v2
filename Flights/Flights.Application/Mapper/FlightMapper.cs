@@ -11,7 +11,6 @@ namespace Flights.Application.Mapper
             {
                 Destination = command.Destination,
                 FlightNumber = command.FlightNumber,
-                Id = command.Id,
                 Origin = command.Origin,
                 Status = command.Status
             };
