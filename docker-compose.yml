@@ -35,6 +35,7 @@ services:
         ports:
             - "80:80"
         environment:
+            - ASPNETCORE_URLS=http://+:80
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
@@ -44,8 +45,6 @@ services:
         container_name: ${DOCKER_REGISTRY-}flights-processor
         networks: 
             - microservice
-        ports:
-            - "8080"
         build:
             context: .
             dockerfile: ./Flights/Flights.Processor/Dockerfile
@@ -54,6 +53,21 @@ services:
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
+
+    auditlog-api:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}auditlog-api
+        build:
+            context: .
+            dockerfile: ./AuditLog.API/Dockerfile
+        networks:
+            - microservice
+        ports:
+            - "8080:8080"
+        environment:
+            - ASPNETCORE_URLS=http://+:8080
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
     
     eventstore:
         image: eventstore/eventstore:5.0.8-xenial
