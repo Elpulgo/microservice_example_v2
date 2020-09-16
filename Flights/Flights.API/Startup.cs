@@ -1,7 +1,5 @@
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
-using Flights.Application.Handlers;
+using Flights.Application;
 using Flights.Core;
 using Flights.Core.Extensions;
 using Flights.Infrastructure;
@@ -26,20 +24,17 @@ namespace Flights.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var eventstoreStreamName = Configuration["EVENTSTORE_STREAM_NAME"];
+            var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
+            var postgresConnection = Configuration["POSTGRE_CONNECTION"];
 
-            var postgreConnectionString = "Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;";
+            services.AddSingleton<PostgreContext>(sp => new PostgreContext(postgresConnection));
+            services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
 
-
-            services.AddSingleton<PostgreContext>(sp => new PostgreContext(postgreConnectionString));
             services.AddTransient<IFlightReadRepository, FlightReadRepository>();
-            services.AddTransient<IFlightWriteRepository, FlightWriteRepository>();
-
-            var eventStoreConnectionString = "tcp://admin:changeit@eventstore:1113";
-
-            services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventStoreConnectionString, "event_flights"));
             services.AddTransient<IFlightEventStorePublisher, FlightEventStorePublisher>();
 
-            services.AddMediatR(typeof(CreateFlightHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(MediatRDependencyInjectionHelper).GetTypeInfo().Assembly);
 
             services.AddControllers();
         }
@@ -55,103 +50,6 @@ namespace Flights.API
             {
                 endpoints.MapControllers();
             });
-
-
-            // Test(app).Wait();
-            Test2(app).Wait();
-
-        }
-
-        private async Task Test2(IApplicationBuilder app)
-        {
-            // TEST
-            var repoRead = app.ApplicationServices.GetRequiredService<IFlightReadRepository>();
-            var repoWrite = app.ApplicationServices.GetRequiredService<IFlightWriteRepository>();
-
-            var result = await repoRead.SelectAsync((a => a.FlightNumber == "BA_4444"));
-
-            foreach (var item in result)
-            {
-                Console.WriteLine($"Flight: {item.Id} | {item.Destination} | {item.Origin} | {item.Status} | {item.FlightNumber}");
-            }
-        }
-
-        private async Task Test(IApplicationBuilder app)
-        {
-            // TEST
-            var repoRead = app.ApplicationServices.GetRequiredService<IFlightReadRepository>();
-            var repoWrite = app.ApplicationServices.GetRequiredService<IFlightWriteRepository>();
-
-            try
-            {
-
-                // System.Threading.Thread.Sleep(10000);
-                // Console.WriteLine("Slepts 10 secs.. will try");
-
-                var result = await repoWrite.InsertAsync(new Flight(
-                    "Malmö_111",
-                    "Copenhagen_111",
-                    "SAS123_111",
-                    FlightStatus.Boarded)
-                );
-
-                var result2 = await repoWrite.InsertAsync(new Flight(
-                    "Malmö_222",
-                    "Copenhagen_222",
-                    "SAS123_222",
-                    FlightStatus.Boarded)
-                );
-
-                var result3 = await repoWrite.InsertAsync(new Flight(
-                    "Malmö_333",
-                    "Copenhagen_333",
-                    "SAS123_333",
-                    FlightStatus.Boarded)
-                );
-
-                Console.WriteLine($"Successfully added 3 flights!");
-
-                var flight = await repoRead.GetByIdAsync(result.Id);
-                Console.WriteLine($"Successfully fetched flight with id: {flight.Id} and flight number {flight.FlightNumber}");
-
-                var allFlights = await repoRead.GetAllAsync();
-
-                foreach (var f in allFlights)
-                {
-                    Console.WriteLine($"Got flight with id: {f.Id} and flightnumber: {f.FlightNumber}");
-                }
-
-                var idToDelete = result.Id;
-
-                await repoWrite.DeleteByIdAsync(result.Id);
-
-                Console.WriteLine($"Successfully deleted flight with id: {idToDelete}");
-
-                var idToDelete3 = result3.Id;
-
-                await repoWrite.DeleteAsync(result3);
-                Console.WriteLine($"Successfully deleted flight with id: {idToDelete3} by deleting entity..");
-
-                result2.FlightNumber = "BA_4444";
-                var success = await repoWrite.UpdateAsync(result2);
-
-                Console.WriteLine($"Updated flight? {success}");
-
-                Console.WriteLine($"################\n");
-
-
-                allFlights = await repoRead.GetAllAsync();
-
-                foreach (var f in allFlights)
-                {
-                    Console.WriteLine($"Final flight with id: {f.Id} and flightnumber: {f.FlightNumber}");
-                }
-            }
-            catch (System.Exception ex)
-            {
-
-                Console.WriteLine($"Exception, cant insert flight {ex.Message} {ex.StackTrace}");
-            }
         }
     }
 }
