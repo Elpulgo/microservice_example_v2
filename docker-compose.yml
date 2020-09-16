@@ -23,14 +23,21 @@ services:
         ports:
             - "80:80"
 
-    #flights-processor:
-    #    restart: always
-    #    container_name: ${DOCKER_REGISTRY-}flights-processor
-    #    networks: 
-    #        - microservice
-    #    build:
-    #        context: .
-    #        dockerfile: ./Flights/Flights.Processor/Dockerfile
+    flights-processor:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}flights-processor
+        networks: 
+            - microservice
+        ports:
+            - "8080"
+        build:
+            context: .
+            dockerfile: ./Flights/Flights.Processor/Dockerfile
+        environment: 
+            - EVENTSTORE_SUBSCRIPTION_GROUP_NAME=subscribe_flights
+            - EVENTSTORE_STREAM_NAME=event_flights
+            - EVENTSTORE_CONNECTION=tcp://admin:changeit@eventstore:1113
+            - POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
     
     eventstore:
         image: eventstore/eventstore:5.0.8-xenial
