@@ -63,6 +63,17 @@ namespace Flights.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("exists/{id}")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> FlightExists(Guid id)
+        {
+            var result = await m_Mediator.Send(new GetFlightByIdQuery(id));
+            if (result == null)
+                return Ok(false);
+
+            return Ok(true);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<FlightResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllFlights()
