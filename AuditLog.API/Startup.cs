@@ -26,13 +26,11 @@ namespace AuditLog.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var eventstoreStreamName = Configuration["EVENTSTORE_STREAM_NAME"];
             var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
 
-            services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
+            services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, "NotRelevantForAuditLog"));
             services.AddTransient<IEventStoreReader, EventStoreReader>();
             services.AddControllers();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
