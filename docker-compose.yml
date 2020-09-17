@@ -8,6 +8,10 @@ x-EVENTSTORE_FLIGHT_STREAM_NAME:
     &EVENTSTORE_FLIGHT_STREAM_NAME
     EVENTSTORE_STREAM_NAME=event_flights
 
+x-EVENTSTORE_PASSENGER_STREAM_NAME:
+    &EVENTSTORE_PASSENGER_STREAM_NAME
+    EVENTSTORE_PASSENGER_STREAM_NAME=event_passengers
+
 x-POSTGRES_FLIGHT_DB_CONNECTION:
     &POSTGRES_FLIGHT_DB_CONNECTION
     POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
@@ -67,6 +71,7 @@ services:
         environment:
             - ASPNETCORE_URLS=http://+:8080
             - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_PASSENGER_STREAM_NAME
             - *EVENTSTORE_CONNECTION
     
     eventstore:
