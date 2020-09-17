@@ -16,6 +16,10 @@ x-POSTGRES_FLIGHT_DB_CONNECTION:
     &POSTGRES_FLIGHT_DB_CONNECTION
     POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
 
+x-POSTGRES_PASSENGERS_DB_CONNECTION:
+    &POSTGRES_PASSENGERS_DB_CONNECTION
+    POSTGRE_CONNECTION=Server=db-passengers;Port=5433;Database=Passengers;User Id=passengers_user;Password=passengers_user_pass;
+
 services:
     #api-gateway:
     #    restart: always
@@ -89,9 +93,9 @@ services:
             - EVENTSTORE_INDEX=/var/lib/eventstore-index
             - EVENTSTORE_LOG=/var/log/eventstore
         volumes:
-            - "${HOME}/eventstore/data:/var/lib/eventstore-data"
-            - "${HOME}/eventstore/index:/var/lib/eventstore-index"
-            - "${HOME}/eventstore/logs:/var/log/eventstore"
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/data:/var/lib/eventstore-data"
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/index:/var/lib/eventstore-index"
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/logs:/var/log/eventstore"
         ports:
             - "1112:1112"
             - "1113:1113"
@@ -108,26 +112,27 @@ services:
             - POSTGRES_PASSWORD=flights_user_pass
             - POSTGRES_DB=Flights
         volumes:
-            - "${HOME}/postgres/flights:/var/lib/postgresql/data"
+            - "${HOME}/${DOCKER_REGISTRY}/postgres/flights:/var/lib/postgresql/data"
             - ./DbScript/flights_init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "5432:5432"
         command: -p 5432
     
-    #db-passengers:
-    #    image: postgres:13-alpine
-    #    restart: always
-    #    networks: 
-    #        - microservice
-    #    environment: 
-    #        - POSTGRES_USER=passengers_user
-    #        - POSTGRES_PASSWORD=passengers_user_pass
-    #        - POSTGRES_DB=passengers
-    #    volumes:
-    #        - "${HOME}/postgres/passengers:/var/lib/postgresql/data"
-    #    ports:
-    #        - "5433:5433"
-    #    command: -p 5433
+    db-passengers:
+        image: postgres:13-alpine
+        restart: always
+        networks: 
+            - microservice
+        environment: 
+            - POSTGRES_USER=passengers_user
+            - POSTGRES_PASSWORD=passengers_user_pass
+            - POSTGRES_DB=Passengers
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/postgres/passengers:/var/lib/postgresql/data"
+            - ./DbScript/passengers_init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "5433:5432"
+        command: -p 5432
     
 
 networks:
