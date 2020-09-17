@@ -2,6 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\Flights\Flights.Core\Flights.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EventStore.Client" Version="20.6.0" />
   </ItemGroup>
 
   <PropertyGroup>

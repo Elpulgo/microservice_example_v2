@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Shared.Infrastructure.Data;
+using Shared.Infrastructure.Events;
 
 namespace AuditLog.API
 {
@@ -29,7 +30,7 @@ namespace AuditLog.API
             var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
 
             services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
-
+            services.AddTransient<IEventStoreReader, EventStoreReader>();
             services.AddControllers();
 
         }

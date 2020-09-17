@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AuditLog.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shared.Infrastructure.Data;
+using Shared.Infrastructure.Events;
 
 namespace AuditLog.API.Controllers
 {
@@ -12,20 +14,24 @@ namespace AuditLog.API.Controllers
     [Route("[controller]")]
     public class AuditLogController : ControllerBase
     {
-        private readonly IEventStoreContext m_Context;
+        private readonly IEventStoreReader m_EventStoreReader;
 
-        public AuditLogController(IEventStoreContext context)
+        public AuditLogController(IEventStoreReader eventStoreReader)
         {
-            m_Context = context;
+            m_EventStoreReader = eventStoreReader;
         }
 
-        [HttpGet]
+        [HttpGet("flights")]
         public async Task<IActionResult> GetAuditLogForFlights()
         {
-            return null;
+            var result = (await m_EventStoreReader.ReadAll("event_flights"))
+                .Select(resolvedEvent => new FlightAuditLogModel(resolvedEvent.Event))
+                .ToList();
+
+            return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("passengers")]
         public async Task<IActionResult> GetAuditLogForPassengers()
         {
             return null;
