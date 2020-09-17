@@ -62,6 +62,21 @@ services:
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
 
+
+    passengers-processor:
+        restart: always
+        container_name: ${DOCKER_REGISTRY-}passengers-processor
+        networks: 
+            - microservice
+        build:
+            context: .
+            dockerfile: ./Passengers/Passengers.Processor/Dockerfile
+        environment: 
+            - EVENTSTORE_SUBSCRIPTION_GROUP_NAME=subscribe_passengers
+            - *EVENTSTORE_PASSENGER_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_PASSENGERS_DB_CONNECTION
+
     auditlog-api:
         restart: always
         container_name: ${DOCKER_REGISTRY-}auditlog-api
