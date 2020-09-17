@@ -5,9 +5,12 @@ namespace Shared.Core.Models
 {
     public class EventDataMeta : IEventDataMeta
     {
-        public EventTypeOperation EventTypeOperation { get; private set; }
-        public string EventName { get; private set; }
-        public DateTime Timestamp { get; private set; }
+        public EventTypeOperation EventTypeOperation { get; set; }
+        public string EventName { get; set; }
+        public DateTime Timestamp { get; set; }
+
+        public EventDataMeta()
+        { }
 
         public EventDataMeta(EventTypeOperation eventTypeOperation, string eventName)
         {
