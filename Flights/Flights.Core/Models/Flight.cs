@@ -7,7 +7,7 @@ namespace Flights.Core
         public static string Table = "Flights";
         public Flight() : base(Table)
         {
-
+            
         }
 
         public Flight(
