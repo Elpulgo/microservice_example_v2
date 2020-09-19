@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Passengers.Core\Passengers.Core.csproj" />
     <ProjectReference Include="..\Passengers.Infrastructure\Passengers.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Core\Shared.Core.csproj" />
   </ItemGroup>
 
 </Project>
