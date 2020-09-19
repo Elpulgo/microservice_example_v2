@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Flights.Application.Mapper;
 using Flights.Application.Queries;
 using Flights.Application.Responses;
 using Flights.Core;
@@ -23,16 +24,7 @@ namespace Flights.Application.Handlers
         {
             var allFlights = await m_Repository.GetAllAsync();
 
-            return allFlights
-                .Select(flight => new FlightResponse()
-                {
-                    Destination = flight.Destination,
-                    FlightNumber = flight.FlightNumber,
-                    Id = flight.Id,
-                    Origin = flight.Origin,
-                    Status = flight.Status
-                })
-                .ToList();
+            return allFlights.Map();
         }
     }
 }
