@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Passengers.Application.Commands;
+using Passengers.Application.Responses;
 using Passengers.Core.Models;
 
 namespace Passengers.Application.Mapper
@@ -23,6 +26,18 @@ namespace Passengers.Application.Mapper
                 Status = command.Status,
                 Id = command.Id
             };
+        }
+        public static IReadOnlyList<PassengerResponse> Map(this IReadOnlyList<Passenger> passengers)
+        {
+            return passengers
+                .Select(passenger => new PassengerResponse()
+                {
+                    FlightId = passenger.FlightId,
+                    Id = passenger.Id,
+                    Name = passenger.Name,
+                    Status = passenger.Status
+                })
+                .ToList();
         }
     }
 }
