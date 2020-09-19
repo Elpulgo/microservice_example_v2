@@ -28,9 +28,8 @@ namespace Passengers.Application.Commands
 
         public CreatePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
             : base(eventStorePublisher)
-        {
-            m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
-        }
+            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+
         public async Task<PassengerCommandResponse> Handle(CreatePassengerCommand request, CancellationToken cancellationToken)
         {
             var eventData = new PassengerEventData(request.Map(), EventTypeOperation.Create, "Create passenger");

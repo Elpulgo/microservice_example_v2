@@ -29,9 +29,8 @@ namespace Passengers.Application.Commands
 
         public UpdatePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
             : base(eventStorePublisher)
-        {
-            m_EventStorePublisher = eventStorePublisher;
-        }
+            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+
         public async Task<PassengerCommandResponse> Handle(UpdatePassengerCommand request, CancellationToken cancellationToken)
         {
             if (request.Status == PassengerStatus.None)

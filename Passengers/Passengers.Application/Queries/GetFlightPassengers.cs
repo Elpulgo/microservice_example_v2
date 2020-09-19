@@ -30,16 +30,10 @@ namespace Passengers.Application.Queries
         private readonly IPassengerReadRepository m_Repository;
 
         public GetFlightPassengersHandler(IPassengerReadRepository repository)
-        {
-            m_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        }
+            => m_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
         public async Task<IReadOnlyList<PassengerResponse>> Handle(GetFlightPassengersQuery request, CancellationToken cancellationToken)
-        {
-            var passengers = await m_Repository
-                .SelectAsync(passenger => passenger.FlightId == request.FlightId);
-
-            return passengers.Map();
-        }
+            => (await m_Repository
+                .SelectAsync(passenger => passenger.FlightId == request.FlightId)).Map();
     }
 }
