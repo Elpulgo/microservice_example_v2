@@ -4,6 +4,7 @@ using Passengers.Application.Responses;
 using System.Threading;
 using System.Threading.Tasks;
 using Passengers.Core;
+using Passengers.Application.Mapper;
 
 namespace Passengers.Application.Queries
 {
@@ -39,13 +40,7 @@ namespace Passengers.Application.Queries
             if (passenger == null)
                 return null;
 
-            return new PassengerResponse()
-            {
-                FlightId = passenger.FlightId,
-                Id = passenger.Id,
-                Name = passenger.Name,
-                Status = passenger.Status
-            };
+            return passenger.Map();
         }
     }
 }

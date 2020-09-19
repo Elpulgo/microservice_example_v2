@@ -19,19 +19,18 @@ namespace Passengers.Application.Commands
         public PassengerStatus Status { get; set; }
 
         public UpdatePassengerCommand()
-        {
-
-        }
+        { }
     }
 
     public class UpdatePassengerHandler
-       : IRequestHandler<UpdatePassengerCommand, PassengerCommandResponse>
+       : BasePassengerCommand, IRequestHandler<UpdatePassengerCommand, PassengerCommandResponse>
     {
-        private readonly IPassengerEventStorePublisher m_Publisher;
+        private readonly IPassengerEventStorePublisher m_EventStorePublisher;
 
-        public UpdatePassengerHandler(IPassengerEventStorePublisher publisher)
+        public UpdatePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
+            : base(eventStorePublisher)
         {
-            m_Publisher = publisher;
+            m_EventStorePublisher = eventStorePublisher;
         }
         public async Task<PassengerCommandResponse> Handle(UpdatePassengerCommand request, CancellationToken cancellationToken)
         {
@@ -39,23 +38,7 @@ namespace Passengers.Application.Commands
                 return new PassengerCommandResponse() { Success = false, Error = "Can't update status to 'None', invalid status" };
 
             var eventData = new PassengerEventData(request.Map(), EventTypeOperation.Update, "Update passenger");
-
-            var response = new PassengerCommandResponse();
-
-            try
-            {
-                await m_Publisher.Publish(eventData);
-                response.Success = true;
-
-            }
-            catch (Exception exception)
-            {
-                response.Success = false;
-                response.Error = exception.Message;
-                response.StackTrace = exception.StackTrace;
-            }
-
-            return response;
+            return await base.Handle(eventData, cancellationToken);
         }
     }
 }

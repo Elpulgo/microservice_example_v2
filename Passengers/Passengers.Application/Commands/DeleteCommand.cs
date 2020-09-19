@@ -13,18 +13,17 @@ namespace Passengers.Application.Commands
     public class DeletePassengerCommand : IRequest<PassengerCommandResponse>
     {
         public Guid Id { get; set; }
-
         public DeletePassengerCommand()
-        {
-
-        }
+        { }
     }
 
-    public class DeletePassengerHandler : IRequestHandler<DeletePassengerCommand, PassengerCommandResponse>
+    public class DeletePassengerHandler
+        : BasePassengerCommand, IRequestHandler<DeletePassengerCommand, PassengerCommandResponse>
     {
         private readonly IPassengerEventStorePublisher m_EventStorePublisher;
 
         public DeletePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
+            : base(eventStorePublisher)
         {
             m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
         }
@@ -36,21 +35,7 @@ namespace Passengers.Application.Commands
                 EventTypeOperation.Delete,
                 "Delete passenger");
 
-            var response = new PassengerCommandResponse();
-
-            try
-            {
-                await m_EventStorePublisher.Publish(eventData);
-                response.Success = true;
-            }
-            catch (Exception exception)
-            {
-                response.Success = false;
-                response.Error = exception.Message;
-                response.StackTrace = exception.StackTrace;
-            }
-
-            return response;
+            return await base.Handle(eventData, cancellationToken);
         }
     }
 }

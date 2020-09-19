@@ -39,5 +39,16 @@ namespace Passengers.Application.Mapper
                 })
                 .ToList();
         }
+
+        public static PassengerResponse Map(this Passenger passenger)
+        {
+            return new PassengerResponse()
+            {
+                FlightId = passenger.FlightId,
+                Id = passenger.Id,
+                Name = passenger.Name,
+                Status = passenger.Status
+            };
+        }
     }
 }
