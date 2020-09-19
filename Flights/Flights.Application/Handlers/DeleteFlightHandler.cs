@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Flights.Application.Commands;
-using Flights.Application.Mapper;
 using Flights.Application.Responses;
 using Flights.Core;
 using Flights.Core.Events;
@@ -22,7 +21,10 @@ namespace Flights.Application.Handlers
 
         public async Task<FlightCommandResponse> Handle(DeleteFlightCommand request, CancellationToken cancellationToken)
         {
-            var eventData = new FlightEventData(new Flight() { Id = request.Id }, EventTypeOperation.Delete, "Delete flight");
+            var eventData = new FlightEventData(
+                new Flight() { Id = request.Id },
+                EventTypeOperation.Delete,
+                "Delete flight");
 
             var response = new FlightCommandResponse();
 
