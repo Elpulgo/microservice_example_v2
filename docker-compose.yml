@@ -10,7 +10,7 @@ x-EVENTSTORE_FLIGHT_STREAM_NAME:
 
 x-EVENTSTORE_PASSENGER_STREAM_NAME:
     &EVENTSTORE_PASSENGER_STREAM_NAME
-    EVENTSTORE_PASSENGER_STREAM_NAME=event_passengers
+    EVENTSTORE_STREAM_NAME=event_passengers
 
 x-POSTGRES_FLIGHT_DB_CONNECTION:
     &POSTGRES_FLIGHT_DB_CONNECTION
@@ -62,6 +62,21 @@ services:
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
 
+    # passengers-api:
+    #     restart: always
+    #     container_name: ${DOCKER_REGISTRY-}passengers-api
+    #     build:
+    #         context: .
+    #         dockerfile: ./Passengers/Passengers.API/Dockerfile
+    #     networks:
+    #         - microservice
+    #     ports:
+    #         - "8050:8050"
+    #     environment:
+    #         - ASPNETCORE_URLS=http://+:8050
+    #         - *EVENTSTORE_PASSENGER_STREAM_NAME
+    #         - *EVENTSTORE_CONNECTION
+    #         - *POSTGRES_PASSENGERS_DB_CONNECTION
 
     passengers-processor:
         restart: always
