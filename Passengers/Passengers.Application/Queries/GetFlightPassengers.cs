@@ -4,12 +4,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Passengers.Application.Mapper;
-using Passengers.Application.Queries;
 using Passengers.Application.Responses;
 using Passengers.Core;
 
-namespace Passengers.Application.Handlers
+namespace Passengers.Application.Queries
 {
+    public class GetFlightPassengersQuery : IRequest<IReadOnlyList<PassengerResponse>>
+    {
+        public Guid FlightId { get; }
+        public GetFlightPassengersQuery(Guid flightId)
+        {
+            if (flightId == null)
+                throw new ArgumentNullException(nameof(flightId));
+
+            if (flightId == Guid.Empty)
+                throw new ArgumentException($"{nameof(flightId)} can't be empty.");
+
+            FlightId = flightId;
+        }
+    }
+
     public class GetFlightPassengersHandler
     : IRequestHandler<GetFlightPassengersQuery, IReadOnlyList<PassengerResponse>>
     {

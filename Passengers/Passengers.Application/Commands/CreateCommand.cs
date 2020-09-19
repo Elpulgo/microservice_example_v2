@@ -2,16 +2,27 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Passengers.Application.Commands;
 using Passengers.Application.Mapper;
 using Passengers.Application.Responses;
 using Passengers.Core;
 using Passengers.Core.Events;
 using Shared.Core.Constants;
 
-namespace Passengers.Application.Handlers
+namespace Passengers.Application.Commands
 {
-    public class CreatePassengerHandler : IRequestHandler<CreatePassengerCommand, PassengerCommandResponse>
+    public class CreatePassengerCommand : IRequest<PassengerCommandResponse>
+    {
+        public string Name { get; set; }
+
+        public Guid FlightId { get; set; }
+        public CreatePassengerCommand()
+        {
+
+        }
+    }
+
+    public class CreatePassengerHandler
+        : IRequestHandler<CreatePassengerCommand, PassengerCommandResponse>
     {
         private readonly IPassengerEventStorePublisher m_EventStorePublisher;
 

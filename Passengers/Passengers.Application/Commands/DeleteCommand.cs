@@ -2,15 +2,24 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Passengers.Application.Commands;
 using Passengers.Application.Responses;
 using Passengers.Core;
 using Passengers.Core.Events;
 using Passengers.Core.Models;
 using Shared.Core.Constants;
 
-namespace Passengers.Application.Handlers
+namespace Passengers.Application.Commands
 {
+    public class DeletePassengerCommand : IRequest<PassengerCommandResponse>
+    {
+        public Guid Id { get; set; }
+
+        public DeletePassengerCommand()
+        {
+
+        }
+    }
+
     public class DeletePassengerHandler : IRequestHandler<DeletePassengerCommand, PassengerCommandResponse>
     {
         private readonly IPassengerEventStorePublisher m_EventStorePublisher;
