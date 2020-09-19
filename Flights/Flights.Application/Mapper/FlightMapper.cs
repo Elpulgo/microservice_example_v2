@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Flights.Application.Commands;
+using Flights.Application.Responses;
 using Flights.Core;
 
 namespace Flights.Application.Mapper
@@ -26,6 +29,20 @@ namespace Flights.Application.Mapper
                 Origin = command.Origin,
                 Status = command.Status
             };
+        }
+
+        public static IReadOnlyList<FlightResponse> Map(this IReadOnlyList<Flight> flights)
+        {
+            return flights
+                .Select(flight => new FlightResponse()
+                {
+                    Destination = flight.Destination,
+                    FlightNumber = flight.FlightNumber,
+                    Id = flight.Id,
+                    Origin = flight.Origin,
+                    Status = flight.Status
+                })
+                .ToList();
         }
     }
 }

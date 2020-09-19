@@ -17,7 +17,7 @@ namespace Flights.Application.Handlers
 
         public CreateFlightHandler(IFlightEventStorePublisher eventStorePublisher)
         {
-            m_EventStorePublisher = eventStorePublisher;
+            m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
         }
 
         public async Task<FlightCommandResponse> Handle(CreateFlightCommand request, CancellationToken cancellationToken)
