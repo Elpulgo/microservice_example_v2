@@ -24,9 +24,7 @@ namespace Passengers.Application.Commands
 
         public DeletePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
             : base(eventStorePublisher)
-        {
-            m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
-        }
+            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
 
         public async Task<PassengerCommandResponse> Handle(DeletePassengerCommand request, CancellationToken cancellationToken)
         {

@@ -44,5 +44,17 @@ namespace Flights.Application.Mapper
                 })
                 .ToList();
         }
+
+        public static FlightResponse Map(this Flight flight)
+        {
+            return new FlightResponse()
+            {
+                Destination = flight.Destination,
+                FlightNumber = flight.FlightNumber,
+                Id = flight.Id,
+                Origin = flight.Origin,
+                Status = flight.Status
+            };
+        }
     }
 }

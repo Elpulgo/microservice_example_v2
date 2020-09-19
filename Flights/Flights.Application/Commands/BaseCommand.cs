@@ -1,25 +1,24 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Passengers.Application.Responses;
-using Passengers.Core;
-using Passengers.Core.Models;
+using Flights.Application.Responses;
+using Flights.Core;
 using Shared.Core.Models;
 
-namespace Passengers.Application.Commands
+namespace Flights.Application.Commands
 {
-    public class BasePassengerCommand
+    public class BaseFlightCommand
     {
-        private readonly IPassengerEventStorePublisher m_EventStorePublisher;
+        private readonly IFlightEventStorePublisher m_EventStorePublisher;
 
-        public BasePassengerCommand(IPassengerEventStorePublisher eventStorePublisher)
+        public BaseFlightCommand(IFlightEventStorePublisher eventStorePublisher)
             => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
 
-        public async Task<PassengerCommandResponse> Handle(
-            IEventData<Passenger> eventData,
+        public async Task<FlightCommandResponse> Handle(
+            IEventData<Flight> eventData,
             CancellationToken cancellationToken)
         {
-            var response = new PassengerCommandResponse();
+            var response = new FlightCommandResponse();
 
             try
             {

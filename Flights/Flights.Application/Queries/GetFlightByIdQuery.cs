@@ -1,6 +1,10 @@
 using MediatR;
 using System;
 using Flights.Application.Responses;
+using Flights.Core;
+using System.Threading.Tasks;
+using System.Threading;
+using Flights.Application.Mapper;
 
 namespace Flights.Application.Queries
 {
@@ -18,5 +22,16 @@ namespace Flights.Application.Queries
 
             Id = id;
         }
+    }
+
+    public class GetFlightHandler : IRequestHandler<GetFlightByIdQuery, FlightResponse>
+    {
+        private readonly IFlightReadRepository m_Repository;
+
+        public GetFlightHandler(IFlightReadRepository repository)
+            => m_Repository = repository ?? throw new ArgumentNullException(nameof(repository));
+
+        public async Task<FlightResponse> Handle(GetFlightByIdQuery request, CancellationToken cancellationToken)
+            => (await m_Repository.GetByIdAsync(request.Id))?.Map();
     }
 }
