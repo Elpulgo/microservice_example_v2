@@ -4,5 +4,18 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Core\Shared.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\Passengers.Core\Passengers.Core.csproj" />
+    <ProjectReference Include="..\Passengers.Infrastructure\Passengers.Infrastructure.csproj" />
+    <ProjectReference Include="..\Passengers.Application\Passengers.Application.csproj" />
+  </ItemGroup>
+
 
 </Project>
