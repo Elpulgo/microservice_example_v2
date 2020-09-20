@@ -15,11 +15,11 @@ namespace Passengers.Application.Commands
         public BasePassengerCommand(IPassengerEventStorePublisher eventStorePublisher)
             => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
 
-        public async Task<PassengerCommandResponse> Handle(
+        public async Task<CommandResponseBase> Handle(
             IEventData<Passenger> eventData,
             CancellationToken cancellationToken)
         {
-            var response = new PassengerCommandResponse();
+            var response = new CommandResponseBase();
 
             try
             {

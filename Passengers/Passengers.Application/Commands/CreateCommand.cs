@@ -30,7 +30,8 @@ namespace Passengers.Application.Commands
         public async Task<PassengerCommandResponse> Handle(CreatePassengerCommand request, CancellationToken cancellationToken)
         {
             var eventData = new PassengerEventData(request.Map(), EventTypeOperation.Create, "Create passenger");
-            return await base.Handle(eventData, cancellationToken);
+            var result = await base.Handle(eventData, cancellationToken);
+            return new PassengerCommandResponse(result, eventData.Data.Id);
         }
     }
 }

@@ -4,7 +4,7 @@ POST http://localhost:8050/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Sonja",
+    "name": "Inez",
     "flightId": "356a5cfe-9602-4a54-8943-1715477571c3"
 }
 ### 

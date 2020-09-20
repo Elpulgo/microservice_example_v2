@@ -7,6 +7,7 @@ using Flights.Core;
 using Flights.Core.Events;
 using MediatR;
 using Shared.Core.Constants;
+using Shared.Core.Models;
 
 namespace Flights.Application.Commands
 {
@@ -23,15 +24,19 @@ namespace Flights.Application.Commands
     }
 
     public class UpdateFlightHandler
-       : BaseFlightCommand, IRequestHandler<UpdateFlightCommand, FlightCommandResponse>
+       : BaseFlightCommand, IRequestHandler<UpdateFlightCommand, CommandResponseBase>
     {
         public UpdateFlightHandler(IFlightEventStorePublisher eventStorePublisher)
             : base(eventStorePublisher) { }
 
-        public async Task<FlightCommandResponse> Handle(UpdateFlightCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponseBase> Handle(UpdateFlightCommand request, CancellationToken cancellationToken)
         {
             if (request.Status == FlightStatus.None || !Enum.IsDefined(typeof(FlightStatus), request.Status))
-                return new FlightCommandResponse() { Success = false, Error = $"Can't update flight to status '{request.Status}', invalid status!" };
+                return new CommandResponseBase()
+                {
+                    Success = false,
+                    Error = $"Can't update flight to status '{request.Status}', invalid status!"
+                };
 
             var eventData = new FlightEventData(request.Map(), EventTypeOperation.Update, "Update flight");
 
