@@ -27,7 +27,7 @@ namespace Passengers.Processor
                 .ConfigureServices((hostContext, services) =>
                 {
                     var eventStoreGroupName = hostContext.Configuration["EVENTSTORE_SUBSCRIPTION_GROUP_NAME"];
-                    var eventstoreStreamName = hostContext.Configuration["EVENTSTORE_STREAM_NAME"];
+                    var eventstoreStreamName = hostContext.Configuration["EVENTSTORE_PASSENGER_STREAM_NAME"];
                     var eventstoreConnection = hostContext.Configuration["EVENTSTORE_CONNECTION"];
                     var postgresConnection = hostContext.Configuration["POSTGRE_CONNECTION"];
 

@@ -32,7 +32,7 @@ namespace Passengers.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var eventstoreStreamName = Configuration["EVENTSTORE_STREAM_NAME"];
+            var eventstoreStreamName = Configuration["EVENTSTORE_PASSENGER_STREAM_NAME"];
             var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
             var postgresConnection = Configuration["POSTGRE_CONNECTION"];
 

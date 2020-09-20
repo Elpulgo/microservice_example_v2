@@ -40,8 +40,8 @@ POST http://localhost:80/flights HTTP/1.1
 content-type: application/json
 
 {
-    "destination": "Malmö",
-    "origin": "Kuala Lumpur",
+    "destination": "Danmark",
+    "origin": "Norge",
     "flightNumber": "KL123"
 }
 
@@ -70,4 +70,19 @@ GET http://localhost:80/flights/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
 
 ###
 GET http://localhost:80/flights HTTP/1.1
+
+
+
+### Auditlog
+
+GET http://localhost:8080/auditlog/flights HTTP/1.1
+
+###
+GET http://localhost:8080/auditlog/passengers HTTP/1.1
+
+###
+GET http://localhost:8080/auditlog/all HTTP/1.1
+
+
+
 
