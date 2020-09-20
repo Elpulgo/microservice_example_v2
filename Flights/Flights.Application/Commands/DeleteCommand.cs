@@ -18,11 +18,8 @@ namespace Flights.Application.Commands
     public class DeleteFlightHandler
         : BaseFlightCommand, IRequestHandler<DeleteFlightCommand, FlightCommandResponse>
     {
-        private readonly IFlightEventStorePublisher m_EventStorePublisher;
-
         public DeleteFlightHandler(IFlightEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher)
-            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+            : base(eventStorePublisher) { }
 
         public async Task<FlightCommandResponse> Handle(DeleteFlightCommand request, CancellationToken cancellationToken)
         {

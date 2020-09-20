@@ -24,11 +24,8 @@ namespace Passengers.Application.Commands
     public class CreatePassengerHandler
         : BasePassengerCommand, IRequestHandler<CreatePassengerCommand, PassengerCommandResponse>
     {
-        private readonly IPassengerEventStorePublisher m_EventStorePublisher;
-
         public CreatePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher)
-            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+            : base(eventStorePublisher) { }
 
         public async Task<PassengerCommandResponse> Handle(CreatePassengerCommand request, CancellationToken cancellationToken)
         {

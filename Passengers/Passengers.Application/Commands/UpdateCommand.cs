@@ -25,16 +25,13 @@ namespace Passengers.Application.Commands
     public class UpdatePassengerHandler
        : BasePassengerCommand, IRequestHandler<UpdatePassengerCommand, PassengerCommandResponse>
     {
-        private readonly IPassengerEventStorePublisher m_EventStorePublisher;
-
         public UpdatePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher)
-            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+            : base(eventStorePublisher) { }
 
         public async Task<PassengerCommandResponse> Handle(UpdatePassengerCommand request, CancellationToken cancellationToken)
         {
-            if (request.Status == PassengerStatus.None)
-                return new PassengerCommandResponse() { Success = false, Error = "Can't update status to 'None', invalid status" };
+            if (request.Status == PassengerStatus.None || !Enum.IsDefined(typeof(PassengerStatus), request.Status))
+                return new PassengerCommandResponse() { Success = false, Error = $"Can't update status to '{request.Status}', invalid status" };
 
             var eventData = new PassengerEventData(request.Map(), EventTypeOperation.Update, "Update passenger");
             return await base.Handle(eventData, cancellationToken);

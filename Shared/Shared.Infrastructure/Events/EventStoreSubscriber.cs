@@ -25,18 +25,28 @@ namespace Shared.Infrastructure.Events
 
         public async Task Subscribe()
         {
-            // TODO: Should read from file which is the current position of the stream, and start from there..
             var settings = CreateSettings();
             await CreatePersistentSubscriptionIfNotExistsAsync(settings);
 
-            await m_Context.Connection.ConnectToPersistentSubscriptionAsync(
-                stream: m_Context.EventStreamName,
-                m_GroupName,
-                EventAppeardAction(),
-                subscriptionDropped: null,
-                userCredentials: null,
-                bufferSize: 10,
-                autoAck: false);
+            try
+            {
+                await m_Context.Connection.ConnectToPersistentSubscriptionAsync(
+                    stream: m_Context.EventStreamName,
+                    m_GroupName,
+                    EventAppeardAction(),
+                    subscriptionDropped: null,
+                    userCredentials: new UserCredentials(
+                        m_Context.Credentials.User,
+                        m_Context.Credentials.Password),
+                    bufferSize: 10,
+                    autoAck: false);
+
+                Console.WriteLine($"Successfully attached to persistent subscription stream: '{m_Context.EventStreamName}', groupname: '{m_GroupName}'.");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"Failed to attach to persistent subscription stream: '{m_Context.EventStreamName}', groupname: '{m_GroupName}', reason: {exception.Message}");
+            }
 
             Action<EventStorePersistentSubscriptionBase, ResolvedEvent> EventAppeardAction()
             {
@@ -53,7 +63,6 @@ namespace Shared.Infrastructure.Events
             var entity = JsonSerializer.Deserialize<T>(utf8EncodedData);
             var operation = ParseEventTypeOperation(evt.Event.EventType);
 
-            // DEBUG
             Console.WriteLine($"Got an event with operation '{operation.ToString()}', '{utf8EncodedData}'");
 
             try

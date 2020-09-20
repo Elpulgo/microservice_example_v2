@@ -26,27 +26,18 @@ namespace Flights.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateFlight([FromBody] CreateFlightCommand command)
-        {
-            var result = await m_Mediator.Send(command);
-            return Ok(result);
-        }
+            => Ok((await m_Mediator.Send(command)));
 
 
         [HttpDelete]
         [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteById([FromBody] DeleteFlightCommand command)
-        {
-            var result = await m_Mediator.Send(command);
-            return Ok(result);
-        }
+            => Ok((await m_Mediator.Send(command)));
 
         [HttpPut]
         [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Update([FromBody] UpdateFlightCommand command)
-        {
-            var result = await m_Mediator.Send(command);
-            return Ok(result);
-        }
+            => Ok((await m_Mediator.Send(command)));
 
         #endregion
 

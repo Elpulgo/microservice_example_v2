@@ -1,0 +1,73 @@
+## Passengers
+
+POST http://localhost:8050/passengers HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Lasse",
+    "flightId": "356a5cfe-9602-4a54-8943-1715477571c3"
+}
+### 
+
+DELETE http://localhost:8050/passengers HTTP/1.1
+content-type: application/json
+
+{
+    "id": ""
+}
+
+### 
+PUT http://localhost:8050/passengers HTTP/1.1
+content-type: application/json
+
+{
+    "id": "",
+    "flightId": "",
+    "name": "",
+    "status": 1
+}
+
+### 
+GET http://localhost:8050/passengers/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+
+###
+GET http://localhost:8050/passengers/flight/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+
+
+
+### Flights
+POST http://localhost:80/flights HTTP/1.1
+content-type: application/json
+
+{
+    "destination": "Malmö",
+    "origin": "Kuala Lumpur",
+    "flightNumber": "KL123"
+}
+
+### 
+DELETE http://localhost:80/flights HTTP/1.1
+content-type: application/json
+
+{
+    "id": "8ee3e7dc-8c15-4c0a-9834-226ab1545aea"
+}
+
+###
+PUT http://localhost:80/flights HTTP/1.1
+content-type: application/json
+
+{
+    "destination": "Dallas",
+    "origin": "Kuala Lumpur",
+    "flightNumber": "KL123",
+    "id": "356a5cfe-9602-4a54-8943-1715477571c3",
+    "status": 2
+}
+
+###
+GET http://localhost:80/flights/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+
+###
+GET http://localhost:80/flights HTTP/1.1
+
