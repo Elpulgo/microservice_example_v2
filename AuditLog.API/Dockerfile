@@ -8,6 +8,7 @@ WORKDIR /src
 ### Copy auditlog csproj
 COPY ./AuditLog.API/AuditLog.API.csproj ./AuditLog.API/AuditLog.API.csproj 
 COPY ./Flights/Flights.Core/Flights.Core.csproj ./Flights/Flights.Core/Flights.Core.csproj
+COPY ./Passengers/Passengers.Core/Passengers.Core.csproj ./Passengers/Passengers.Core/Passengers.Core.csproj
 
 ### Copy shared csproj
 COPY ./Shared/Shared.Core/Shared.Core.csproj ./Shared/Shared.Core/Shared.Core.csproj
@@ -18,6 +19,7 @@ RUN dotnet restore ./AuditLog.API/AuditLog.API.csproj
 ### Copy auditlog files
 COPY ./AuditLog.API ./AuditLog.API
 COPY ./Flights/Flights.Core ./Flights/Flights.Core
+COPY ./Passengers/Passengers.Core ./Passengers/Passengers.Core
 
 ### Copy shared files
 COPY ./Shared/Shared.Core ./Shared/Shared.Core

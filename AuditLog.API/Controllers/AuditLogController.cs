@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AuditLog.API.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Shared.Infrastructure.Data;
 using Shared.Infrastructure.Events;
 
 namespace AuditLog.API.Controllers
@@ -16,33 +12,46 @@ namespace AuditLog.API.Controllers
     public class AuditLogController : ControllerBase
     {
         private readonly IEventStoreReader m_EventStoreReader;
-        private IConfiguration Configuration { get; }
+        private EventStoreConfiguration EventStoreConfiguration { get; }
 
         public AuditLogController(
             IEventStoreReader eventStoreReader,
-            IConfiguration configuration)
+            EventStoreConfiguration eventStoreConfiguration)
         {
             m_EventStoreReader = eventStoreReader;
-            Configuration = configuration;
+            EventStoreConfiguration = eventStoreConfiguration;
         }
 
 
         [HttpGet("flights")]
         public async Task<IActionResult> GetAuditLogForFlights()
-        {
-            var flightStreamName = Configuration["EVENTSTORE_FLIGHT_STREAM_NAME"];
-            var result = (await m_EventStoreReader.ReadAll(flightStreamName))
-                .Select(resolvedEvent => new FlightAuditLogModel(resolvedEvent.Event))
-                .ToList();
-
-            return Ok(result);
-        }
+            => Ok((await GetAllFlights()));
 
         [HttpGet("passengers")]
         public async Task<IActionResult> GetAuditLogForPassengers()
+            => Ok((await GetAllPassengers()));
+
+        [HttpGet("all")]
+        public async Task<IActionResult> Test()
         {
-            var passengerStreamName = Configuration["EVENTSTORE_PASSENGER_STREAM_NAME"];
-            return null;
+            var passengers = await GetAllPassengers();
+            var flights = await GetAllFlights();
+
+            var all = new List<IEnumerable<dynamic>> { passengers, flights }
+                .SelectMany(s => s)
+                .OrderBy(s => s.Created).ToList();
+
+            return Ok(all);
         }
+
+        private async Task<List<PassengerAuditLogModel>> GetAllPassengers()
+            => (await m_EventStoreReader.ReadAll(EventStoreConfiguration.PassengerStreamName))
+               .Select(resolvedEvent => new PassengerAuditLogModel(resolvedEvent.Event))
+               .ToList();
+
+        private async Task<List<FlightAuditLogModel>> GetAllFlights()
+            => (await m_EventStoreReader.ReadAll(EventStoreConfiguration.FlightStreamName))
+                .Select(resolvedEvent => new FlightAuditLogModel(resolvedEvent.Event))
+                .ToList();
     }
 }

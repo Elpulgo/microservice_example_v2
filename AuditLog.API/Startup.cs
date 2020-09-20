@@ -29,6 +29,7 @@ namespace AuditLog.API
             var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
 
             services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, "NotRelevantForAuditLog"));
+            services.AddSingleton<EventStoreConfiguration>();
             services.AddTransient<IEventStoreReader, EventStoreReader>();
             services.AddControllers();
         }
