@@ -4,7 +4,7 @@ POST http://localhost:8050/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Lasse",
+    "name": "Sonja",
     "flightId": "356a5cfe-9602-4a54-8943-1715477571c3"
 }
 ### 
@@ -13,7 +13,7 @@ DELETE http://localhost:8050/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": ""
+    "id": "1f58f4c6-416b-46cf-9cfd-dbf1c1e4a152"
 }
 
 ### 
@@ -21,14 +21,14 @@ PUT http://localhost:8050/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "",
-    "flightId": "",
-    "name": "",
+    "id": "6424cf4e-964e-4ab3-910f-d0d3293549a7",
+    "flightId": "356a5cfe-9602-4a54-8943-1715477571c3",
+    "name": "ALLAN",
     "status": 1
 }
 
 ### 
-GET http://localhost:8050/passengers/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+GET http://localhost:8050/passengers/5563782b-34c9-4397-bf37-d6d27019dc62 HTTP/1.1
 
 ###
 GET http://localhost:8050/passengers/flight/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
