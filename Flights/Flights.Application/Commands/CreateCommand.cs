@@ -23,11 +23,8 @@ namespace Flights.Application.Commands
     public class CreateFlightHandler
         : BaseFlightCommand, IRequestHandler<CreateFlightCommand, FlightCommandResponse>
     {
-        private readonly IFlightEventStorePublisher m_EventStorePublisher;
-
         public CreateFlightHandler(IFlightEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher)
-            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+            : base(eventStorePublisher) { }
 
         public async Task<FlightCommandResponse> Handle(CreateFlightCommand request, CancellationToken cancellationToken)
         {

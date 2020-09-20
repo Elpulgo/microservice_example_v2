@@ -25,16 +25,13 @@ namespace Flights.Application.Commands
     public class UpdateFlightHandler
        : BaseFlightCommand, IRequestHandler<UpdateFlightCommand, FlightCommandResponse>
     {
-        private readonly IFlightEventStorePublisher m_EventStorePublisher;
-
         public UpdateFlightHandler(IFlightEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher)
-            => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
+            : base(eventStorePublisher) { }
 
         public async Task<FlightCommandResponse> Handle(UpdateFlightCommand request, CancellationToken cancellationToken)
         {
-            if (request.Status == FlightStatus.None)
-                return new FlightCommandResponse() { Success = false, Error = "Can't update flight to status 'None', invalid status!" };
+            if (request.Status == FlightStatus.None || !Enum.IsDefined(typeof(FlightStatus), request.Status))
+                return new FlightCommandResponse() { Success = false, Error = $"Can't update flight to status '{request.Status}', invalid status!" };
 
             var eventData = new FlightEventData(request.Map(), EventTypeOperation.Update, "Update flight");
 
