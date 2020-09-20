@@ -29,7 +29,8 @@ namespace Flights.Application.Commands
         public async Task<FlightCommandResponse> Handle(CreateFlightCommand request, CancellationToken cancellationToken)
         {
             var eventData = new FlightEventData(request.Map(), EventTypeOperation.Create, "Create flight");
-            return await base.Handle(eventData, cancellationToken);
+            var result = await base.Handle(eventData, cancellationToken);
+            return new FlightCommandResponse(result, eventData.Data.Id);
         }
     }
 }

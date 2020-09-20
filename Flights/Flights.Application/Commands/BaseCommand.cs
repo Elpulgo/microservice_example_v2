@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Flights.Application.Responses;
 using Flights.Core;
 using Shared.Core.Models;
 
@@ -14,11 +13,11 @@ namespace Flights.Application.Commands
         public BaseFlightCommand(IFlightEventStorePublisher eventStorePublisher)
             => m_EventStorePublisher = eventStorePublisher ?? throw new ArgumentNullException(nameof(eventStorePublisher));
 
-        public async Task<FlightCommandResponse> Handle(
+        public async Task<CommandResponseBase> Handle(
             IEventData<Flight> eventData,
             CancellationToken cancellationToken)
         {
-            var response = new FlightCommandResponse();
+            var response = new CommandResponseBase();
 
             try
             {

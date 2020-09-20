@@ -7,10 +7,11 @@ using Passengers.Core;
 using Passengers.Core.Events;
 using Passengers.Core.Models;
 using Shared.Core.Constants;
+using Shared.Core.Models;
 
 namespace Passengers.Application.Commands
 {
-    public class DeletePassengerCommand : IRequest<PassengerCommandResponse>
+    public class DeletePassengerCommand : IRequest<CommandResponseBase>
     {
         public Guid Id { get; set; }
         public DeletePassengerCommand()
@@ -18,12 +19,12 @@ namespace Passengers.Application.Commands
     }
 
     public class DeletePassengerHandler
-        : BasePassengerCommand, IRequestHandler<DeletePassengerCommand, PassengerCommandResponse>
+        : BasePassengerCommand, IRequestHandler<DeletePassengerCommand, CommandResponseBase>
     {
         public DeletePassengerHandler(IPassengerEventStorePublisher eventStorePublisher)
             : base(eventStorePublisher) { }
 
-        public async Task<PassengerCommandResponse> Handle(DeletePassengerCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponseBase> Handle(DeletePassengerCommand request, CancellationToken cancellationToken)
         {
             var eventData = new PassengerEventData(
                 new Passenger() { Id = request.Id },

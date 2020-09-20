@@ -7,6 +7,7 @@ using Flights.Application.Queries;
 using Flights.Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Core.Models;
 
 namespace Flights.API.Controllers
 {
@@ -30,12 +31,12 @@ namespace Flights.API.Controllers
 
 
         [HttpDelete]
-        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteById([FromBody] DeleteFlightCommand command)
             => Ok((await m_Mediator.Send(command)));
 
         [HttpPut]
-        [ProducesResponseType(typeof(FlightCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Update([FromBody] UpdateFlightCommand command)
             => Ok((await m_Mediator.Send(command)));
 

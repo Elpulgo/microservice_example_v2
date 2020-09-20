@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Passengers.Application.Commands;
 using Passengers.Application.Queries;
 using Passengers.Application.Responses;
+using Shared.Core.Models;
 
 namespace Passengers.API.Controllers
 {
@@ -31,13 +32,13 @@ namespace Passengers.API.Controllers
             => Ok((await m_Mediator.Send(command)));
 
         [HttpDelete]
-        [ProducesResponseType(typeof(PassengerCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeletePassengerById([FromBody] DeletePassengerCommand command)
             => Ok((await m_Mediator.Send(command)));
 
 
         [HttpPut]
-        [ProducesResponseType(typeof(PassengerCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Update([FromBody] UpdatePassengerCommand command)
             => Ok((await m_Mediator.Send(command)));
 
