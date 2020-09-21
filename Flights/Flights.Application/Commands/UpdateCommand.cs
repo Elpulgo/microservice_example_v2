@@ -11,7 +11,7 @@ using Shared.Core.Models;
 
 namespace Flights.Application.Commands
 {
-    public class UpdateFlightCommand : IRequest<FlightCommandResponse>
+    public class UpdateFlightCommand : IRequest<CommandResponseBase>
     {
         public Guid Id { get; set; }
         public string Destination { get; set; }

@@ -10,4 +10,6 @@
 /bin
 /obj
 ./Flights/Flights.API/obj
+./api-gateway/obj
+./api-gateway/bin
 **/.vscode
