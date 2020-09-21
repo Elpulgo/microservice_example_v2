@@ -1,0 +1,114 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/flights",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "flights-api",
+                    "Port": 8040
+                }
+            ],
+            "UpstreamPathTemplate": "/api/flights",
+            "UpstreamHttpMethod": [
+                "POST",
+                "PUT",
+                "GET",
+                "DELETE",
+                "OPTIONS",
+                "FETCH"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/flights/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "flights-api",
+                    "Port": 8040
+                }
+            ],
+            "UpstreamPathTemplate": "/api/flights/{everything}",
+            "UpstreamHttpMethod": [
+                "POST",
+                "PUT",
+                "GET",
+                "DELETE",
+                "OPTIONS",
+                "FETCH"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/passengers",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "passengers-api",
+                    "Port": 8050
+                }
+            ],
+            "UpstreamPathTemplate": "/api/passengers",
+            "UpstreamHttpMethod": [
+                "POST",
+                "PUT",
+                "GET",
+                "DELETE",
+                "OPTIONS",
+                "FETCH"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/passengers/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "passengers-api",
+                    "Port": 8050
+                }
+            ],
+            "UpstreamPathTemplate": "/api/passengers/{everything}",
+            "UpstreamHttpMethod": [
+                "POST",
+                "PUT",
+                "GET",
+                "DELETE",
+                "OPTIONS",
+                "FETCH"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/auditlog",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "auditlog-api",
+                    "Port": 8080
+                }
+            ],
+            "UpstreamPathTemplate": "/api/auditlog",
+            "UpstreamHttpMethod": [
+                "POST",
+                "GET",
+                "OPTIONS",
+                "FETCH"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/auditlog/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "auditlog-api",
+                    "Port": 8080
+                }
+            ],
+            "UpstreamPathTemplate": "/api/auditlog/{everything}",
+            "UpstreamHttpMethod": [
+                "POST",
+                "GET",
+                "OPTIONS",
+                "FETCH"
+            ]
+        }
+    ]
+}

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Passengers.Application.Mapper;
-using Passengers.Application.Responses;
 using Passengers.Core;
 using Passengers.Core.Events;
 using Passengers.Core.Models;

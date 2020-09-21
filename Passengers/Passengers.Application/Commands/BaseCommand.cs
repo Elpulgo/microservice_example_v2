@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Passengers.Application.Responses;
 using Passengers.Core;
 using Passengers.Core.Models;
 using Shared.Core.Models;

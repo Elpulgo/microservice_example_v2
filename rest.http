@@ -1,42 +1,42 @@
 ## Passengers
 
-POST http://localhost:8050/passengers HTTP/1.1
+POST http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
     "name": "Inez",
-    "flightId": "356a5cfe-9602-4a54-8943-1715477571c3"
+    "flightId": "14c18107-e661-4ff6-8c64-c3479b5fe5aa"
 }
 ### 
 
-DELETE http://localhost:8050/passengers HTTP/1.1
+DELETE http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "1f58f4c6-416b-46cf-9cfd-dbf1c1e4a152"
+    "id": "bec9c2f5-3a1c-4089-826f-8484897b3ed1"
 }
 
 ### 
-PUT http://localhost:8050/passengers HTTP/1.1
+PUT http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "6424cf4e-964e-4ab3-910f-d0d3293549a7",
+    "id": "bec9c2f5-3a1c-4089-826f-8484897b3ed1",
     "flightId": "356a5cfe-9602-4a54-8943-1715477571c3",
     "name": "ALLAN",
     "status": 1
 }
 
 ### 
-GET http://localhost:8050/passengers/5563782b-34c9-4397-bf37-d6d27019dc62 HTTP/1.1
+GET http://localhost:5000/api/passengers/bec9c2f5-3a1c-4089-826f-8484897b3ed1 HTTP/1.1
 
 ###
-GET http://localhost:8050/passengers/flight/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+GET http://localhost:5000/api/passengers/flight/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
 
 
 
 ### Flights
-POST http://localhost:80/flights HTTP/1.1
+POST http://localhost:5000/api/flights HTTP/1.1
 content-type: application/json
 
 {
@@ -46,42 +46,42 @@ content-type: application/json
 }
 
 ### 
-DELETE http://localhost:80/flights HTTP/1.1
+DELETE http://localhost:5000/api/flights HTTP/1.1
 content-type: application/json
 
 {
-    "id": "8ee3e7dc-8c15-4c0a-9834-226ab1545aea"
+    "id": "534504dd-f2b1-4d45-bf68-e33b110290cb"
 }
 
 ###
-PUT http://localhost:80/flights HTTP/1.1
+PUT http://localhost:5000/api/flights HTTP/1.1
 content-type: application/json
 
 {
     "destination": "Dallas",
     "origin": "Kuala Lumpur",
     "flightNumber": "KL123",
-    "id": "356a5cfe-9602-4a54-8943-1715477571c3",
-    "status": 2
+    "id": "92336375-3d52-4305-be13-e23137913028",
+    "status": 1
 }
 
 ###
-GET http://localhost:80/flights/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
+GET http://localhost:5000/api/flights/356a5cfe-9602-4a54-8943-1715477571c3 HTTP/1.1
 
 ###
-GET http://localhost:80/flights HTTP/1.1
+GET http://localhost:5000/api/flights HTTP/1.1
 
 
 
 ### Auditlog
 
-GET http://localhost:8080/auditlog/flights HTTP/1.1
+GET http://localhost:5000/api/auditlog/flights HTTP/1.1
 
 ###
-GET http://localhost:8080/auditlog/passengers HTTP/1.1
+GET http://localhost:5000/api/auditlog/passengers HTTP/1.1
 
 ###
-GET http://localhost:8080/auditlog/all HTTP/1.1
+GET http://localhost:5000/api/auditlog/all HTTP/1.1
 
 
 

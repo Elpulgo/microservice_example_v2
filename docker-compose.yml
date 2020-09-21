@@ -21,16 +21,16 @@ x-POSTGRES_PASSENGERS_DB_CONNECTION:
     POSTGRE_CONNECTION=Server=db-passengers;Port=5432;Database=Passengers;User Id=passengers_user;Password=passengers_user_pass;
 
 services:
-    #api-gateway:
-    #    restart: always
-    #    container_name: ${DOCKER_REGISTRY-}api-gateway
-    #    ports:
-    #        - "5000:80"
-    #    build:
-    #        context: .
-    #        dockerfile: ./api-gateway/Dockerfile
-    #    networks: 
-    #        - microservice
+    api-gateway:
+       restart: always
+       container_name: ${DOCKER_REGISTRY-}api-gateway
+       ports:
+           - "5000:80"
+       build:
+           context: .
+           dockerfile: ./api-gateway/Dockerfile
+       networks: 
+           - microservice
 
     flights-api:
         restart: always
@@ -40,10 +40,8 @@ services:
             dockerfile: ./Flights/Flights.API/Dockerfile
         networks:
             - microservice
-        ports:
-            - "80:80"
         environment:
-            - ASPNETCORE_URLS=http://+:80
+            - ASPNETCORE_URLS=http://+:8040
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
@@ -70,8 +68,6 @@ services:
             dockerfile: ./Passengers/Passengers.API/Dockerfile
         networks:
             - microservice
-        ports:
-            - "8050:8050"
         environment:
             - ASPNETCORE_URLS=http://+:8050
             - *EVENTSTORE_PASSENGER_STREAM_NAME
@@ -100,8 +96,6 @@ services:
             dockerfile: ./AuditLog.API/Dockerfile
         networks:
             - microservice
-        ports:
-            - "8080:8080"
         environment:
             - ASPNETCORE_URLS=http://+:8080
             - *EVENTSTORE_FLIGHT_STREAM_NAME

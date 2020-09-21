@@ -33,5 +33,5 @@ FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1-alpine
 WORKDIR /app
 COPY --from=base /src/out ./
 
-EXPOSE 80
+EXPOSE 8040
 ENTRYPOINT ["./Flights.API"]
