@@ -34,8 +34,10 @@ namespace Passengers.API
             services.AddTransient<IPassengerReadRepository, PassengerReadRepository>();
             services.AddTransient<IPassengerEventStorePublisher, PassengerEventStorePublisher>();
 
-            services.AddMediatR(typeof(MediatRDependencyInjectionHelper).GetTypeInfo().Assembly);
+            services.AddSingleton<RpcClient>();
 
+
+            services.AddMediatR(typeof(MediatRDependencyInjectionHelper).GetTypeInfo().Assembly);
             services.AddControllers();
         }
 
@@ -50,6 +52,11 @@ namespace Passengers.API
             {
                 endpoints.MapControllers();
             });
+
+            System.Console.WriteLine("fetching RpcClient and sending..");
+            var client = app.ApplicationServices.GetRequiredService<RpcClient>();
+            client.Send().Wait();
+            System.Console.WriteLine("Done sending..");
         }
     }
 }

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package flights;
+
+service FlightService {
+  rpc FlightExists (FlightExistsRequest) returns (FlightExistsReply);
+}
+
+message FlightExistsRequest {
+  string flightId = 1;
+}
+
+message FlightExistsReply {
+  bool exists = 1;
+}

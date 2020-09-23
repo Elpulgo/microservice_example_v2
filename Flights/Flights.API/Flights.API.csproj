@@ -9,6 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\..\Shared\Shared.Proto\flights.proto" GrpcServices="Server" Link="flights.proto" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.31.0" />
     <PackageReference Include="MediatR" Version="8.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
   </ItemGroup>

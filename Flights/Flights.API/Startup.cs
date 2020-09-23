@@ -24,6 +24,7 @@ namespace Flights.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             var eventstoreStreamName = Configuration["EVENTSTORE_FLIGHT_STREAM_NAME"];
             var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
             var postgresConnection = Configuration["POSTGRE_CONNECTION"];
@@ -33,9 +34,12 @@ namespace Flights.API
 
             services.AddTransient<IFlightReadRepository, FlightReadRepository>();
             services.AddTransient<IFlightEventStorePublisher, FlightEventStorePublisher>();
+            
+            // TODO: Interface??
+            services.AddTransient<RpcService>();
 
             services.AddMediatR(typeof(MediatRDependencyInjectionHelper).GetTypeInfo().Assembly);
-
+            services.AddGrpc();
             services.AddControllers();
         }
 

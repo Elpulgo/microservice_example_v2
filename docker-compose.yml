@@ -41,10 +41,14 @@ services:
         networks:
             - microservice
         environment:
-            - ASPNETCORE_URLS=http://+:8040
+            - ASPNETCORE_URLS=http://+:8040;https://+:8041
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
+        volumes:
+            - ~/.aspnet/https:/https:ro
 
     flights-processor:
         restart: always
