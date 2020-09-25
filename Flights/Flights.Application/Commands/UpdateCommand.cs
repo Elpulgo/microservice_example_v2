@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Flights.Application.Mapper;
-using Flights.Application.Responses;
 using Flights.Core;
 using Flights.Core.Events;
 using MediatR;
