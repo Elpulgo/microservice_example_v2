@@ -31,6 +31,14 @@ namespace Shared.Infrastructure
             return (await connection.GetAllAsync<T>()).AsList();
         }
 
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            EnsureNotNullOrEmpty(id);
+            using var connection = m_Context.Instance;
+            var result = await connection.ExecuteAsync($@"SELECT 1 FROM {m_TableName} WHERE id=@Id", new { Id = id });
+            return result == 1;
+        }
+
         public async Task<T> GetByIdAsync(Guid id)
         {
             EnsureNotNullOrEmpty(id);

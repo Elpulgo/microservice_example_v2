@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Flights.Core;
 using Shared.Core.RPC;
@@ -20,17 +19,6 @@ namespace Flights.Application.RPC
         }
 
         public async Task<bool> FlightExistsAsync(FlightExistsRequest request)
-        {
-            // TODO: Should implement a find instead. doing this to test the chain now..
-            try
-            {
-                await m_FlightsReadRepository.GetByIdAsync(request.FlightId);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-        }
+            => await m_FlightsReadRepository.ExistsAsync(request.FlightId);
     }
 }
