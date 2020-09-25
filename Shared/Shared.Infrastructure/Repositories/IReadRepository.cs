@@ -10,6 +10,8 @@ namespace Shared.Infrastructure
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetByIdAsync(Guid id);
 
+        Task<bool> ExistsAsync(Guid id);
+
         Task<IReadOnlyList<T>> SelectAsync(Expression<Func<T, bool>> predicate);
     }
 }
