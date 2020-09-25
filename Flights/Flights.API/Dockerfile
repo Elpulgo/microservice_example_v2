@@ -34,4 +34,5 @@ WORKDIR /app
 COPY --from=base /src/out ./
 
 EXPOSE 8040
+EXPOSE 8041
 ENTRYPOINT ["./Flights.API"]
