@@ -45,6 +45,7 @@ services:
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
+            - RPC_SERVER_PORT=8041
 
     flights-processor:
         restart: always
