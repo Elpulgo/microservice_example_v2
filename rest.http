@@ -4,8 +4,8 @@ POST http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Inez",
-    "flightId": "14c18107-e661-4ff6-8c64-c3479b5fe5bb"
+    "name": "Apan apanso8866n",
+    "flightId": "058f4b09-b77f-49b1-9ecf-ce159bfd38a5"
 }
 ### 
 
@@ -21,9 +21,9 @@ PUT http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "bec9c2f5-3a1c-4089-826f-8484897b3ed1",
-    "flightId": "356a5cfe-9602-4a54-8943-1715477571c3",
-    "name": "ALLAN",
+    "id": "4881b3c1-60c1-4edd-8908-99d68d6f8070",
+    "flightId": "058f4b09-b77f-49b1-9ecf-ce159bfd38a5",
+    "name": "Alf",
     "status": 1
 }
 
@@ -40,7 +40,7 @@ POST http://localhost:5000/api/flights HTTP/1.1
 content-type: application/json
 
 {
-    "destination": "Danmark",
+    "destination": "Sverige",
     "origin": "Norge",
     "flightNumber": "KL123"
 }
@@ -61,7 +61,7 @@ content-type: application/json
     "destination": "Dallas",
     "origin": "Kuala Lumpur",
     "flightNumber": "KL123",
-    "id": "92336375-3d52-4305-be13-e23137913028",
+    "id": "058f4b09-b77f-49b1-9ecf-ce159bfd38a5",
     "status": 1
 }
 

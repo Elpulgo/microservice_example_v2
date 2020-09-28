@@ -6,8 +6,12 @@ namespace Flights.Infrastructure
 {
     public class FlightEventStoreSubscriber : EventStoreSubscriber<Flight>, IFlightEventStoreSubscriber
     {
-        public FlightEventStoreSubscriber(IEventStoreContext context, IFlightWriteRepository writeRepository, string groupName)
-            : base(context, writeRepository, groupName)
+        public FlightEventStoreSubscriber(
+            IProcessedEventCountHandler processedEventCountHandler,
+            IEventStoreContext context,
+            IFlightWriteRepository writeRepository,
+            string groupName)
+            : base(processedEventCountHandler, context, writeRepository, groupName)
         { }
     }
 }
