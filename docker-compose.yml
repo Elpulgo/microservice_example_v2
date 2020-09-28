@@ -46,6 +46,9 @@ services:
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
             - RPC_SERVER_PORT=8041
+        depends_on: 
+            - eventstore
+            - db-flights
 
     flights-processor:
         restart: always
@@ -60,6 +63,9 @@ services:
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_FLIGHT_DB_CONNECTION
+        depends_on: 
+            - eventstore
+            - db-flights
 
     passengers-api:
         restart: always
@@ -76,6 +82,9 @@ services:
             - *POSTGRES_PASSENGERS_DB_CONNECTION
             - FLIGHT_RPC_HOSTNAME=flights-api
             - FLIGHT_RPC_PORT=8041
+        depends_on: 
+            - eventstore
+            - db-passengers
 
     passengers-processor:
         restart: always
@@ -90,6 +99,9 @@ services:
             - *EVENTSTORE_PASSENGER_STREAM_NAME
             - *EVENTSTORE_CONNECTION
             - *POSTGRES_PASSENGERS_DB_CONNECTION
+        depends_on: 
+            - eventstore
+            - db-passengers
 
     auditlog-api:
         restart: always
@@ -104,6 +116,8 @@ services:
             - *EVENTSTORE_FLIGHT_STREAM_NAME
             - *EVENTSTORE_PASSENGER_STREAM_NAME
             - *EVENTSTORE_CONNECTION
+        depends_on: 
+            - eventstore
     
     eventstore:
         image: eventstore/eventstore:5.0.8-xenial
