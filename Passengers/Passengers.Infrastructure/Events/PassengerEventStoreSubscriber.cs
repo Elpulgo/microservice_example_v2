@@ -7,8 +7,12 @@ namespace Passengers.Infrastructure
 {
     public class PassengerEventStoreSubscriber : EventStoreSubscriber<Passenger>, IPassengerEventStoreSubscriber
     {
-        public PassengerEventStoreSubscriber(IEventStoreContext context, IPassengerWriteRepository writeRepository, string groupName)
-            : base(context, writeRepository, groupName)
+        public PassengerEventStoreSubscriber(
+            IProcessedEventCountHandler processedEventCountHandler,
+            IEventStoreContext context,
+            IPassengerWriteRepository writeRepository,
+            string groupName)
+            : base(processedEventCountHandler, context, writeRepository, groupName)
         { }
     }
 }

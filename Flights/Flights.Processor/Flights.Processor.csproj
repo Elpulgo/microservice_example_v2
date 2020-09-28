@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Flights.Core\Flights.Core.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="data\**" CopyToPublishDirectory="PreserveNewest"/>
+  </ItemGroup>
 </Project>

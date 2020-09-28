@@ -14,10 +14,16 @@ namespace Shared.Infrastructure.Events
     {
         private readonly IEventStoreContext m_Context;
         private readonly IWriteRepository<T> m_WriteRepository;
+        private readonly IProcessedEventCountHandler m_ProcessedEventCountHandler;
         private readonly string m_GroupName;
 
-        public EventStoreSubscriber(IEventStoreContext context, IWriteRepository<T> writeRepository, string groupName)
+        public EventStoreSubscriber(
+            IProcessedEventCountHandler processedEventCountHandler,
+            IEventStoreContext context,
+            IWriteRepository<T> writeRepository,
+            string groupName)
         {
+            m_ProcessedEventCountHandler = processedEventCountHandler ?? throw new ArgumentNullException(nameof(processedEventCountHandler));
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
             m_WriteRepository = writeRepository ?? throw new ArgumentNullException(nameof(writeRepository));
             m_GroupName = string.IsNullOrEmpty(groupName) ? throw new ArgumentNullException(nameof(groupName)) : groupName;
@@ -99,6 +105,7 @@ namespace Shared.Infrastructure.Events
                 return;
             }
 
+            m_ProcessedEventCountHandler.PersistsNumberOfProcessedEvents(evt.Event.EventNumber);
             subscription.Acknowledge(evt);
         }
 
@@ -120,13 +127,14 @@ namespace Shared.Infrastructure.Events
             }
         }
 
-        private static PersistentSubscriptionSettings CreateSettings()
+        private PersistentSubscriptionSettings CreateSettings()
          => PersistentSubscriptionSettings
                 .Create()
                 .DoNotResolveLinkTos()
                 .WithNamedConsumerStrategy(SystemConsumerStrategies.DispatchToSingle)
-                .StartFromBeginning()
+                .StartFrom(m_ProcessedEventCountHandler.ReadNumberOfProcessedEvents())
                 .Build();
+
         private static EventTypeOperation ParseEventTypeOperation(string input)
         {
             if (!Enum.TryParse<EventTypeOperation>(input, true, out EventTypeOperation operation))

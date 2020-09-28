@@ -10,7 +10,7 @@ namespace Shared.Infrastructure.Extensions
         public static IPAddress GetDockerIpAddress()
         {
             var hostName = Dns.GetHostName();
-            
+
             var dockerContainerIpAddress = Dns.GetHostEntry(hostName)
                 .AddressList
                 .FirstOrDefault(ad => ad.AddressFamily == AddressFamily.InterNetwork);

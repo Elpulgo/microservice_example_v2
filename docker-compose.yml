@@ -66,6 +66,8 @@ services:
         depends_on: 
             - eventstore
             - db-flights
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/processors/flights/data:/app/data"
 
     passengers-api:
         restart: always
@@ -102,6 +104,8 @@ services:
         depends_on: 
             - eventstore
             - db-passengers
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/processors/passengers/data:/app/data"
 
     auditlog-api:
         restart: always

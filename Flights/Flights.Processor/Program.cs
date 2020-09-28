@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shared.Infrastructure;
 using Shared.Infrastructure.Data;
+using Shared.Infrastructure.Events;
 
 namespace Flights.Processor
 {
@@ -31,11 +32,14 @@ namespace Flights.Processor
                     services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
 
                     services.AddSingleton<IFlightWriteRepository, FlightWriteRepository>();
+                    services.AddSingleton<IProcessedEventCountHandler, ProcessedEventCountHandler>();
 
                     services.AddSingleton<IFlightEventStoreSubscriber>(sp => new FlightEventStoreSubscriber(
+                        sp.GetRequiredService<IProcessedEventCountHandler>(),
                         sp.GetRequiredService<IEventStoreContext>(),
                         sp.GetRequiredService<IFlightWriteRepository>(),
                         eventStoreGroupName));
+
 
                     services.AddHostedService<Worker>();
                 });
