@@ -59,7 +59,17 @@ namespace Shared.Infrastructure
             using var connection = m_Context.Instance;
 
             var command = GetUpdateCommand(entity);
-            var result = await connection.ExecuteAsync(command, entity);
+            using var transaction = await connection.BeginTransactionAsync();
+            var result = await transaction.Connection.ExecuteAsync(command, entity);
+            if (result > 1)
+            {
+                Console.WriteLine("Command updated 2 rows, there is something wrong in the database, this should not happen! Will rollback transaction.");
+                await transaction.RollbackAsync();
+            }
+            else
+            {
+                await transaction.CommitAsync();
+            }
             return result == 1;
         }
 
@@ -91,7 +101,7 @@ namespace Shared.Infrastructure
             }
 
             command = command.Remove(command.Length - 1);
-            command += $" WHERE Id = @Id";
+            command += $" WHERE id = @Id";
 
             return command;
         }
