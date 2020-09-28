@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Passengers.Application.Mapper;
+using Passengers.Application.Notifications;
 using Passengers.Application.Queries;
 using Passengers.Core;
 using Passengers.Core.Events;
@@ -36,15 +37,22 @@ namespace Passengers.Application.Commands
 
         public async Task<CommandResponseBase> Handle(UpdatePassengerCommand request, CancellationToken cancellationToken)
         {
-            if (!ValidatePassengerStatus(request.Status, out CommandResponseBase response))
-                return response;
+            if (!ValidatePassengerStatus(request.Status, out CommandResponseBase invalidStatusResponse))
+                return invalidStatusResponse;
 
-            var (flightExists, existsResponse) = await ValidateFlightExistsAsync(request.FlightId);
+            var (flightExists, flightDoesNotExistResponse) = await ValidateFlightExistsAsync(request.FlightId);
             if (!flightExists)
-                return existsResponse;
+                return flightDoesNotExistResponse;
 
             var eventData = new PassengerEventData(request.Map(), EventTypeOperation.Update, "Update passenger");
-            return await base.Handle(eventData, cancellationToken);
+            var response = await base.Handle(eventData, cancellationToken);
+
+            if (request.Status == PassengerStatus.Boarded)
+            {
+                await NotifyFlightIfAllPassengersBoarded(request.FlightId, request.Id);
+            }
+
+            return response;
         }
 
         private bool ValidatePassengerStatus(PassengerStatus status, out CommandResponseBase response)
@@ -84,6 +92,15 @@ namespace Passengers.Application.Commands
                 Exists: true,
                 Response: null
             );
+        }
+
+        private async Task NotifyFlightIfAllPassengersBoarded(Guid flightId, Guid passengerId)
+        {
+            var hasAllPassengersBoarded = await m_Mediator.Send(new AllPassengersBoardedQuery(flightId, passengerId));
+            if (!hasAllPassengersBoarded)
+                return;
+
+            await m_Mediator.Publish(new AllPassengersBoardedNotification(flightId));
         }
     }
 }
