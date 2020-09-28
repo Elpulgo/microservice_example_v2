@@ -36,7 +36,6 @@ namespace Shared.Infrastructure
             EnsureNotNullOrEmpty(id);
             using var connection = m_Context.Instance;
             var result = await connection.ExecuteScalarAsync<int>($@"SELECT 1 FROM {m_TableName} WHERE id=@Id", new { Id = id });
-            Console.WriteLine($"Result if exists is: '{result}', id is: '{id}'");
             return result == 1;
         }
 
