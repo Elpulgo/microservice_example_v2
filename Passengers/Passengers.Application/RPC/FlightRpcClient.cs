@@ -15,6 +15,14 @@ namespace Passengers.Application.RPC
             m_RpcClient = rpcClient ?? throw new ArgumentNullException(nameof(rpcClient));
         }
 
+        public async Task AllPassengersBoardedAsync(Guid flightId)
+        {
+            using var handler = await m_RpcClient.GetMessageHandlerAsync();
+            var jsonRpcClient = JsonRpc.Attach<IFlightContract>(handler);
+
+            await jsonRpcClient.AllPassengersBoardedAsync(new AllPassengersBoardedRequest() { FlightId = flightId });
+        }
+
         public async Task<bool> FlightExistsAsync(Guid flightId)
         {
             using var handler = await m_RpcClient.GetMessageHandlerAsync();

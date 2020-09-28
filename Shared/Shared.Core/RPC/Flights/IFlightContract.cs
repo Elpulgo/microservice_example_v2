@@ -6,6 +6,6 @@ namespace Shared.Core.RPC
     {
         Task<bool> FlightExistsAsync(FlightExistsRequest request);
 
-        Task AllPassengersBoardedAsync();
+        Task AllPassengersBoardedAsync(AllPassengersBoardedRequest request);
     }
 }
