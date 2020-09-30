@@ -19,7 +19,7 @@ namespace Flights.Application.RPC
             m_Mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
 
-        public async Task AllPassengersBoardedAsync(AllPassengersBoardedRequest request)
+        public async Task<(bool Success, string FailReason)> AllPassengersBoardedAsync(AllPassengersBoardedRequest request)
         {
             var flight = await m_FlightsReadRepository.GetByIdAsync(request.FlightId);
 
@@ -32,7 +32,11 @@ namespace Flights.Application.RPC
                 Status = FlightStatus.AllBoarded
             };
 
-            await m_Mediator.Send(updateCommand);
+            var result = await m_Mediator.Send(updateCommand);
+            if (result.Success)
+                return (true, string.Empty);
+
+            return (false, result.Error);
         }
 
         public async Task<bool> FlightExistsAsync(FlightExistsRequest request)

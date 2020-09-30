@@ -54,7 +54,7 @@ namespace Shared.Infrastructure
             return result.AsList();
         }
 
-        private void EnsureNotNullOrEmpty(Guid id)
+        protected void EnsureNotNullOrEmpty(Guid id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));

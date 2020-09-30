@@ -43,9 +43,6 @@ namespace Passengers.Application.Queries
             => m_ReadRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
 
         public async Task<bool> Handle(AllPassengersBoardedQuery request, CancellationToken cancellationToken)
-        {
-            var passengersOnFlight = await m_ReadRepository.SelectAsync(passenger => passenger.FlightId == request.FlightId && passenger.Id != request.PassengerId);
-            return passengersOnFlight.All(passenger => passenger.Status == PassengerStatus.Boarded);
-        }
+            => await m_ReadRepository.HasAllPassengersBoarded(request.FlightId, request.PassengerId);
     }
 }

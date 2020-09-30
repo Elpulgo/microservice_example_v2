@@ -30,6 +30,12 @@ namespace Passengers.Application.Notifications
             => m_FlightRpcClient = flightRpcClient ?? throw new ArgumentNullException(nameof(flightRpcClient));
 
         public async Task Handle(AllPassengersBoardedNotification notification, CancellationToken cancellationToken)
-            => await m_FlightRpcClient.AllPassengersBoardedAsync(notification.FlightId);
+        {
+            var result = await m_FlightRpcClient.AllPassengersBoardedAsync(notification.FlightId);
+            if (result.Success)
+                return;
+
+            Console.WriteLine($"Failed to notify flight that all passengers has boarded! '{result.FailReason}'");
+        }
     }
 }
