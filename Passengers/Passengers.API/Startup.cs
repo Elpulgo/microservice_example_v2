@@ -1,7 +1,9 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Passengers.Application;
@@ -9,6 +11,7 @@ using Passengers.Application.RPC;
 using Passengers.Core;
 using Passengers.Core.Extensions;
 using Passengers.Infrastructure;
+using Shared.Core.RPC;
 using Shared.Infrastructure;
 using Shared.Infrastructure.Data;
 using Shared.Infrastructure.RPC;
@@ -28,7 +31,8 @@ namespace Passengers.API
         {
             ConfigurePostgres(services);
             ConfigureEventStore(services);
-            ConfigureRPC(services);
+            ConfigureRPCClient(services);
+            ConfigureRPCServer(services);
 
             services.AddTransient<IPassengerReadRepository, PassengerReadRepository>();
             services.AddTransient<IPassengerEventStorePublisher, PassengerEventStorePublisher>();
@@ -69,7 +73,7 @@ namespace Passengers.API
                     eventstoreStreamName));
         }
 
-        private void ConfigureRPC(IServiceCollection services)
+        private void ConfigureRPCClient(IServiceCollection services)
         {
             var flightRpcHostName = Configuration["FLIGHT_RPC_HOSTNAME"];
             var flightRpcPort = Configuration["FLIGHT_RPC_PORT"];
@@ -79,6 +83,20 @@ namespace Passengers.API
                 int.Parse(flightRpcPort)));
 
             services.AddTransient<IFlightRpcClient, FlightRpcClient>();
+        }
+
+        private void ConfigureRPCServer(IServiceCollection services)
+        {
+            services.AddSingleton<IConnectionListenerFactory, SocketTransportFactory>();
+            services.AddTransient<IPassengerContract, PassengersServer>();
+
+            var rpcServerPort = Configuration["RPC_SERVER_PORT"];
+
+            services.AddHostedService<StreamJsonRcpHost>(sp =>
+                new StreamJsonRcpHost(
+                    sp.GetRequiredService<IPassengerContract>(),
+                    sp.GetRequiredService<IConnectionListenerFactory>(),
+                    int.Parse(rpcServerPort)));
         }
     }
 }

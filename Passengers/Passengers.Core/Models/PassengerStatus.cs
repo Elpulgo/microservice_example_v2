@@ -4,6 +4,7 @@ namespace Passengers.Core.Models
     {
         None = 0,
         CheckedIn = 1,
-        Boarded = 2
+        Boarded = 2,
+        Arrived = 3
     }
 }
