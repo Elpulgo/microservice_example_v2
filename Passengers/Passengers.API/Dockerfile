@@ -34,4 +34,5 @@ WORKDIR /app
 COPY --from=base /src/out ./
 
 EXPOSE 8050
+EXPOSE 8051
 ENTRYPOINT ["./Passengers.API"]

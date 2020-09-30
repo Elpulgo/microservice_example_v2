@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -13,9 +14,7 @@ namespace Passengers.Infrastructure
         private readonly PostgreContext m_Context;
 
         public PassengerReadRepository(PostgreContext context) : base(context, Passenger.Table)
-        {
-            m_Context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+            => m_Context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task<bool> HasAllPassengersBoarded(Guid flightId, Guid requestPassengerId)
         {
@@ -44,6 +43,26 @@ namespace Passengers.Infrastructure
                 return true;
 
             return false;
+        }
+
+        public async Task<IReadOnlyList<Passenger>> GetAllPassengersOnFlightAsync(Guid flightId)
+        {
+            base.EnsureNotNullOrEmpty(flightId);
+
+            using var connection = m_Context.Instance;
+
+            var result = await connection.QueryAsync<Passenger>(
+                $@"
+                    SELECT * FROM {Passenger.Table}
+                    WHERE flight_id=@FlightId
+                ",
+                new
+                {
+                    FlightId = flightId
+                }
+            );
+
+            return result.ToList();
         }
     }
 }

@@ -84,6 +84,7 @@ services:
             - *POSTGRES_PASSENGERS_DB_CONNECTION
             - FLIGHT_RPC_HOSTNAME=flights-api
             - FLIGHT_RPC_PORT=8041
+            - RPC_SERVER_PORT=8051
         depends_on: 
             - eventstore
             - db-passengers

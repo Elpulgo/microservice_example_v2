@@ -6,6 +6,7 @@ namespace Shared.Core.RPC
     {
         Task<bool> FlightExistsAsync(FlightExistsRequest request);
 
+        // TODO: Refactor into response class isntead..
         Task<(bool Success, string FailReason)> AllPassengersBoardedAsync(AllPassengersBoardedRequest request);
     }
 }
