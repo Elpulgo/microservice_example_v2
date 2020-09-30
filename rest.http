@@ -21,11 +21,16 @@ PUT http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "4881b3c1-60c1-4edd-8908-99d68d6f8070",
+    "id": "5b5328bd-d14f-47ea-8676-2d3ad252cd34",
     "flightId": "058f4b09-b77f-49b1-9ecf-ce159bfd38a5",
-    "name": "Alf",
-    "status": 1
+    "name": "Alf1",
+    "status": 2
 }
+
+# 4881b3c1-60c1-4edd-8908-99d68d6f8070 
+# 853e7305-e87b-48cd-9c09-fa4493031138 
+# 517ecb98-b652-495f-879a-679e8743d762 
+# ca7f5a4b-9ca8-49f6-bf84-d0c8a4a43fe9
 
 ### 
 GET http://localhost:5000/api/passengers/bec9c2f5-3a1c-4089-826f-8484897b3ed1 HTTP/1.1

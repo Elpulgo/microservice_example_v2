@@ -7,6 +7,6 @@ namespace Passengers.Application.RPC
     {
         Task<bool> FlightExistsAsync(Guid flightId);
 
-        Task AllPassengersBoardedAsync(Guid flightId);
+        Task<(bool Success, string FailReason)> AllPassengersBoardedAsync(Guid flightId);
     }
 }

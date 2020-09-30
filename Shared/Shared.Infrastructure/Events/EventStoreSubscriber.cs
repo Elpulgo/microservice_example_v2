@@ -32,7 +32,11 @@ namespace Shared.Infrastructure.Events
         public async Task Subscribe()
         {
             var settings = CreateSettings();
-            await CreatePersistentSubscriptionIfNotExistsAsync(settings);
+            var succeeded = await CreatePersistentSubscriptionIfNotExistsAsync(settings);
+            if (!succeeded)
+            {
+                await ReplayEventsUpUntilCurrentStateAsync(settings);
+            }
 
             try
             {
@@ -58,12 +62,56 @@ namespace Shared.Infrastructure.Events
             {
                 return async (subscription, evt) =>
                 {
-                    await ExecuteAction(subscription, evt);
+                    var (success, failReason) = await ExecuteAction(evt);
+
+                    if (success)
+                        subscription.Acknowledge(evt);
+                    else
+                        subscription.Fail(
+                            @event: evt,
+                            action: PersistentSubscriptionNakEventAction.Skip,
+                            reason: failReason);
                 };
             }
         }
 
-        private async Task ExecuteAction(EventStorePersistentSubscriptionBase subscription, ResolvedEvent evt)
+        private async Task ReplayEventsUpUntilCurrentStateAsync(PersistentSubscriptionSettings settings)
+        {
+            Console.WriteLine("Will replay events which have been missed.");
+
+            StreamEventsSlice streamEventsSlice = null;
+            int batchSize = 50;
+
+            do
+            {
+                var lastProcessedEvent = m_ProcessedEventCountHandler.ReadNumberOfProcessedEvents();
+                
+                streamEventsSlice = await m_Context.Connection.ReadStreamEventsForwardAsync(
+                    stream: m_Context.EventStreamName,
+                    start: lastProcessedEvent,
+                    count: batchSize,
+                    resolveLinkTos: true,
+                    userCredentials: new UserCredentials(
+                            m_Context.Credentials.User,
+                            m_Context.Credentials.Password)
+                    );
+
+                foreach (var evt in streamEventsSlice.Events)
+                {
+                    var (success, failReason) = await ExecuteAction(evt);
+
+                    if (success)
+                        Console.WriteLine($"Successfully persisted event # '{evt.OriginalEventNumber}' when replaying missed events!");
+                    else
+
+                        Console.WriteLine($"Failed to persist event # '{evt.OriginalEventNumber}'. Event will be discarded since it can't be handled.");
+                }
+            } while (!streamEventsSlice.IsEndOfStream);
+
+            Console.WriteLine("Finished replaying events!");
+        }
+
+        private async Task<(bool Success, string FailReason)> ExecuteAction(ResolvedEvent evt)
         {
             var utf8EncodedData = Encoding.UTF8.GetString(evt.Event.Data);
             var entity = JsonSerializer.Deserialize<T>(utf8EncodedData);
@@ -96,20 +144,14 @@ namespace Shared.Infrastructure.Events
             catch (Exception exception)
             {
                 Console.WriteLine($"Failed with operation '{operation.ToString()}' for event with data: {utf8EncodedData}, caused by {exception.Message}");
-
-                subscription.Fail(
-                    @event: evt,
-                    action: PersistentSubscriptionNakEventAction.Skip,
-                    reason: $"Failed with operation '{operation.ToString()}' for event with data: {utf8EncodedData}, caused by {exception.Message}");
-
-                return;
+                return (false, $"Failed with operation '{operation.ToString()}' for event with data: {utf8EncodedData}, caused by {exception.Message}");
             }
 
             m_ProcessedEventCountHandler.PersistsNumberOfProcessedEvents(evt.Event.EventNumber);
-            subscription.Acknowledge(evt);
+            return (true, string.Empty);
         }
 
-        private async Task CreatePersistentSubscriptionIfNotExistsAsync(PersistentSubscriptionSettings settings)
+        private async Task<bool> CreatePersistentSubscriptionIfNotExistsAsync(PersistentSubscriptionSettings settings)
         {
             try
             {
@@ -120,10 +162,13 @@ namespace Shared.Infrastructure.Events
                     new UserCredentials(
                         m_Context.Credentials.User,
                         m_Context.Credentials.Password));
+
+                return true;
             }
             catch (InvalidOperationException)
             {
                 Console.WriteLine($"Group with name '{m_GroupName}' already exists, won't create a new persistant subscription, but attach to existing.");
+                return false;
             }
         }
 

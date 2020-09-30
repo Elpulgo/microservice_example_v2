@@ -56,20 +56,16 @@ namespace Shared.Infrastructure
         public async Task<bool> UpdateAsync(T entity)
         {
             EnsureNotNull(entity);
-            using var connection = m_Context.Instance;
 
             var command = GetUpdateCommand(entity);
-            using var transaction = await connection.BeginTransactionAsync();
-            var result = await transaction.Connection.ExecuteAsync(command, entity);
+
+            using var connection = m_Context.Instance;
+            var result = await connection.ExecuteAsync(command, entity);
             if (result > 1)
             {
-                Console.WriteLine("Command updated 2 rows, there is something wrong in the database, this should not happen! Will rollback transaction.");
-                await transaction.RollbackAsync();
+                Console.WriteLine("Command updated 2 rows, there is something wrong in the database, this should not happen!");
             }
-            else
-            {
-                await transaction.CommitAsync();
-            }
+
             return result == 1;
         }
 
