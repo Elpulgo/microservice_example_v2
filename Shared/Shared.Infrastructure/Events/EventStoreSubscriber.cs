@@ -88,7 +88,7 @@ namespace Shared.Infrastructure.Events
                 
                 streamEventsSlice = await m_Context.Connection.ReadStreamEventsForwardAsync(
                     stream: m_Context.EventStreamName,
-                    start: lastProcessedEvent,
+                    start: lastProcessedEvent + 1,
                     count: batchSize,
                     resolveLinkTos: true,
                     userCredentials: new UserCredentials(

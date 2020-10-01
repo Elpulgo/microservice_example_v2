@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Flights.Application.Responses;
+using Flights.Application.Notifications;
 using Flights.Core;
 using Flights.Core.Events;
 using MediatR;
@@ -19,8 +19,13 @@ namespace Flights.Application.Commands
     public class DeleteFlightHandler
         : BaseFlightCommand, IRequestHandler<DeleteFlightCommand, CommandResponseBase>
     {
-        public DeleteFlightHandler(IFlightEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher) { }
+        private readonly IMediator m_Mediator;
+
+        public DeleteFlightHandler(
+            IFlightEventStorePublisher eventStorePublisher,
+            IMediator mediator)
+            : base(eventStorePublisher)
+            => m_Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
         public async Task<CommandResponseBase> Handle(DeleteFlightCommand request, CancellationToken cancellationToken)
         {
@@ -29,7 +34,11 @@ namespace Flights.Application.Commands
                 EventTypeOperation.Delete,
                 "Delete flight");
 
-            return await base.Handle(eventData, cancellationToken);
+            var response = await base.Handle(eventData, cancellationToken);
+
+            await m_Mediator.Publish(new FlightDeletedNotification(request.Id));
+
+            return response;
         }
     }
 }
