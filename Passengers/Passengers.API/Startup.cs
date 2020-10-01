@@ -1,20 +1,13 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Passengers.Application;
-using Passengers.Application.RPC;
 using Passengers.Core;
 using Passengers.Core.Extensions;
 using Passengers.Infrastructure;
-using Shared.Core.RPC;
-using Shared.Infrastructure;
-using Shared.Infrastructure.Data;
-using Shared.Infrastructure.RPC;
 
 namespace Passengers.API
 {
@@ -29,10 +22,10 @@ namespace Passengers.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigurePostgres(services);
-            ConfigureEventStore(services);
-            ConfigureRPCClient(services);
-            ConfigureRPCServer(services);
+            services.AddPostgres(Configuration);
+            services.AddEventStore(Configuration);
+            services.AddRPCClient(Configuration);
+            services.AddRPCServer(Configuration);
 
             services.AddTransient<IPassengerReadRepository, PassengerReadRepository>();
             services.AddTransient<IPassengerEventStorePublisher, PassengerEventStorePublisher>();
@@ -52,51 +45,6 @@ namespace Passengers.API
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void ConfigurePostgres(IServiceCollection services)
-        {
-            var postgresConnection = Configuration["POSTGRE_CONNECTION"];
-
-            services.AddSingleton<PostgreContext>(sp =>
-                new PostgreContext(postgresConnection));
-        }
-
-        private void ConfigureEventStore(IServiceCollection services)
-        {
-            var eventstoreStreamName = Configuration["EVENTSTORE_PASSENGER_STREAM_NAME"];
-            var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
-
-            services.AddSingleton<IEventStoreContext>(sp =>
-                new EventStoreContext(
-                    eventstoreConnection,
-                    eventstoreStreamName));
-        }
-
-        private void ConfigureRPCClient(IServiceCollection services)
-        {
-            var flightRpcHostName = Configuration["FLIGHT_RPC_HOSTNAME"];
-            var flightRpcPort = Configuration["FLIGHT_RPC_PORT"];
-
-            services.AddTransient<RpcClient>(sp => new RpcClient(
-                flightRpcHostName,
-                int.Parse(flightRpcPort)));
-
-            services.AddTransient<IFlightRpcClient, FlightRpcClient>();
-        }
-
-        private void ConfigureRPCServer(IServiceCollection services)
-        {
-            services.AddSingleton<IConnectionListenerFactory, SocketTransportFactory>();
-            services.AddTransient<IPassengerContract, PassengersServer>();
-
-            var rpcServerPort = Configuration["RPC_SERVER_PORT"];
-
-            services.AddHostedService<StreamJsonRcpHost>(sp =>
-                new StreamJsonRcpHost(
-                    sp.GetRequiredService<IPassengerContract>(),
-                    sp.GetRequiredService<IConnectionListenerFactory>(),
-                    int.Parse(rpcServerPort)));
         }
     }
 }
