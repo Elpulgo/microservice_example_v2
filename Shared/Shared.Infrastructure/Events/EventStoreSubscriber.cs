@@ -14,16 +14,14 @@ namespace Shared.Infrastructure.Events
     {
         private readonly IEventStoreContext m_Context;
         private readonly IWriteRepository<T> m_WriteRepository;
-        private readonly IProcessedEventCountHandler m_ProcessedEventCountHandler;
         private readonly string m_GroupName;
+        private ProcessedEventCountHandler ProcessedEventCountHandler => ProcessedEventCountHandler.Instance;
 
         public EventStoreSubscriber(
-            IProcessedEventCountHandler processedEventCountHandler,
             IEventStoreContext context,
             IWriteRepository<T> writeRepository,
             string groupName)
         {
-            m_ProcessedEventCountHandler = processedEventCountHandler ?? throw new ArgumentNullException(nameof(processedEventCountHandler));
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
             m_WriteRepository = writeRepository ?? throw new ArgumentNullException(nameof(writeRepository));
             m_GroupName = string.IsNullOrEmpty(groupName) ? throw new ArgumentNullException(nameof(groupName)) : groupName;
@@ -62,6 +60,13 @@ namespace Shared.Infrastructure.Events
             {
                 return async (subscription, evt) =>
                 {
+                    // Skip event if we have already processed it
+                    if (ProcessedEventCountHandler.ReadNumberOfProcessedEvents() >= evt.Event.EventNumber)
+                    {
+                        subscription.Acknowledge(evt);
+                        return;
+                    }
+
                     var (success, failReason) = await ExecuteAction(evt);
 
                     if (success)
@@ -84,8 +89,8 @@ namespace Shared.Infrastructure.Events
 
             do
             {
-                var lastProcessedEvent = m_ProcessedEventCountHandler.ReadNumberOfProcessedEvents();
-                
+                var lastProcessedEvent = ProcessedEventCountHandler.ReadNumberOfProcessedEvents();
+
                 streamEventsSlice = await m_Context.Connection.ReadStreamEventsForwardAsync(
                     stream: m_Context.EventStreamName,
                     start: lastProcessedEvent + 1,
@@ -147,7 +152,7 @@ namespace Shared.Infrastructure.Events
                 return (false, $"Failed with operation '{operation.ToString()}' for event with data: {utf8EncodedData}, caused by {exception.Message}");
             }
 
-            m_ProcessedEventCountHandler.PersistsNumberOfProcessedEvents(evt.Event.EventNumber);
+            ProcessedEventCountHandler.PersistNumberOfProcessedEvents(evt.Event.EventNumber);
             return (true, string.Empty);
         }
 
@@ -177,7 +182,7 @@ namespace Shared.Infrastructure.Events
                 .Create()
                 .DoNotResolveLinkTos()
                 .WithNamedConsumerStrategy(SystemConsumerStrategies.DispatchToSingle)
-                .StartFrom(m_ProcessedEventCountHandler.ReadNumberOfProcessedEvents())
+                .StartFrom(ProcessedEventCountHandler.ReadNumberOfProcessedEvents())
                 .Build();
 
         private static EventTypeOperation ParseEventTypeOperation(string input)

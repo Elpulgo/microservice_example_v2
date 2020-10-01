@@ -36,10 +36,8 @@ namespace Passengers.Processor
                     services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
 
                     services.AddSingleton<IPassengerWriteRepository, PassengerWriteRepository>();
-                    services.AddSingleton<IProcessedEventCountHandler, ProcessedEventCountHandler>();
 
                     services.AddSingleton<IPassengerEventStoreSubscriber>(sp => new PassengerEventStoreSubscriber(
-                        sp.GetRequiredService<IProcessedEventCountHandler>(),
                         sp.GetRequiredService<IEventStoreContext>(),
                         sp.GetRequiredService<IPassengerWriteRepository>(),
                         eventStoreGroupName));
