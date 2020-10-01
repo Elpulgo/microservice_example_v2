@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Flights.Application.Mapper;
+using Flights.Application.Notifications;
 using Flights.Core;
 using Flights.Core.Events;
 using MediatR;
@@ -25,8 +26,13 @@ namespace Flights.Application.Commands
     public class UpdateFlightHandler
        : BaseFlightCommand, IRequestHandler<UpdateFlightCommand, CommandResponseBase>
     {
-        public UpdateFlightHandler(IFlightEventStorePublisher eventStorePublisher)
-            : base(eventStorePublisher) { }
+        private readonly IMediator m_Mediator;
+
+        public UpdateFlightHandler(
+            IFlightEventStorePublisher eventStorePublisher,
+            IMediator mediator)
+            : base(eventStorePublisher)
+            => m_Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
         public async Task<CommandResponseBase> Handle(UpdateFlightCommand request, CancellationToken cancellationToken)
         {
@@ -43,15 +49,13 @@ namespace Flights.Application.Commands
 
             if (response.Success && request.Status.HasFlag(FlightStatus.Arrived))
             {
-                await NotifyPassengersOfArrival(request);
+                await NotifyPassengersOfArrival(request.Id);
             }
 
             return response;
         }
 
-        private async Task NotifyPassengersOfArrival(UpdateFlightCommand request)
-        {
-            throw new NotImplementedException();
-        }
+        private async Task NotifyPassengersOfArrival(Guid flightId)
+            => await m_Mediator.Publish(new FlightArrivedNotification(flightId));
     }
 }
