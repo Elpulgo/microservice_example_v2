@@ -15,7 +15,11 @@
         <input class="form-control" id="flightNumberInput" [(ngModel)]="flightNumber">
       </div>
 
-      <button mat-flat-button color="primary">Create flight</button>
+      <button mat-flat-button color="primary" (click)="createFlight()">Create flight</button>
+    </div>
+    <div *ngFor="let flight of flights">
+      <hr />
+      <app-flight [flight]="flight"></app-flight>
     </div>
   </div>
   <div class="col-6">
