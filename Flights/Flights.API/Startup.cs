@@ -3,18 +3,11 @@ using Flights.Application;
 using Flights.Core;
 using Flights.Core.Extensions;
 using Flights.Infrastructure;
-using Shared.Infrastructure.RPC;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Infrastructure;
-using Shared.Infrastructure.Data;
-using Flights.Application.RPC;
-using Shared.Core.RPC;
 
 namespace Flights.API
 {
@@ -29,9 +22,10 @@ namespace Flights.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigurePostgres(services);
-            ConfigureEventStore(services);
-            ConfigureRPC(services);
+            services.AddEventStore(Configuration);
+            services.AddPostgres(Configuration);
+            services.AddRPCClient(Configuration);
+            services.AddRPCServer(Configuration);
 
             services.AddTransient<IFlightReadRepository, FlightReadRepository>();
             services.AddTransient<IFlightEventStorePublisher, FlightEventStorePublisher>();
@@ -52,39 +46,6 @@ namespace Flights.API
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void ConfigureRPC(IServiceCollection services)
-        {
-            services.AddSingleton<IConnectionListenerFactory, SocketTransportFactory>();
-            services.AddTransient<IFlightContract, FlightsServer>();
-
-            var rpcServerPort = Configuration["RPC_SERVER_PORT"];
-
-            services.AddHostedService<StreamJsonRcpHost>(sp =>
-                new StreamJsonRcpHost(
-                    sp.GetRequiredService<IFlightContract>(),
-                    sp.GetRequiredService<IConnectionListenerFactory>(),
-                    int.Parse(rpcServerPort)));
-        }
-
-        private void ConfigurePostgres(IServiceCollection services)
-        {
-            var postgresConnection = Configuration["POSTGRE_CONNECTION"];
-
-            services.AddSingleton<PostgreContext>(sp =>
-                new PostgreContext(postgresConnection));
-        }
-
-        private void ConfigureEventStore(IServiceCollection services)
-        {
-            var eventstoreStreamName = Configuration["EVENTSTORE_FLIGHT_STREAM_NAME"];
-            var eventstoreConnection = Configuration["EVENTSTORE_CONNECTION"];
-
-            services.AddSingleton<IEventStoreContext>(sp =>
-                new EventStoreContext(
-                    eventstoreConnection,
-                    eventstoreStreamName));
         }
     }
 }
