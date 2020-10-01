@@ -6,22 +6,48 @@ using Shared.Infrastructure.Constants;
 namespace Shared.Infrastructure.Events
 {
 
-    public interface IProcessedEventCountHandler
+    /// <Summary>
+    /// Handles sequence of processed events. Persist to disk so events can be replayed
+    /// if service goes down. Is implemented as a singleton, since it has a cache of the events.
+    /// </Summary>
+    public sealed class ProcessedEventCountHandler
     {
-        int ReadNumberOfProcessedEvents();
-        void PersistsNumberOfProcessedEvents(long numberOfProcessedEvents);
-    }
-
-    public class ProcessedEventCountHandler : IProcessedEventCountHandler
-    {
-        public ProcessedEventCountHandler()
-        {
-
-        }
+        private static readonly Lazy<ProcessedEventCountHandler> m_LazyProcessedEventCoundHandler
+            = new Lazy<ProcessedEventCountHandler>(() => new ProcessedEventCountHandler());
+        public static ProcessedEventCountHandler Instance => m_LazyProcessedEventCoundHandler.Value;
+        private readonly object m_LockObject = new object();
+        private int m_CurrentEventNumber;
+        private ProcessedEventCountHandler()
+            => m_CurrentEventNumber = ReadNumberOfProcessedEventsFromDisk();
 
         // Note! Should throw exception if content can't be read. Shouldn't continue connecting to event stream then
         // since we can't be sure where to process from.
         public int ReadNumberOfProcessedEvents()
+        {
+            lock (m_LockObject)
+            {
+                return m_CurrentEventNumber;
+            }
+        }
+
+        public void PersistNumberOfProcessedEvents(long numberOfProcessedEvents)
+        {
+            if (!Directory.Exists(EventStreamConstants.NumberOfProcessedEventsDirectory))
+            {
+                Directory.CreateDirectory(EventStreamConstants.NumberOfProcessedEventsDirectory);
+            }
+
+            lock (m_LockObject)
+            {
+                File.WriteAllText(
+                    EventStreamConstants.NumberOfProcessedEventsFilePath,
+                    numberOfProcessedEvents.ToString(CultureInfo.InvariantCulture));
+
+                m_CurrentEventNumber = (int)numberOfProcessedEvents;
+            }
+        }
+
+        private int ReadNumberOfProcessedEventsFromDisk()
         {
             if (!File.Exists(EventStreamConstants.NumberOfProcessedEventsFilePath))
                 return 0;
@@ -31,18 +57,6 @@ namespace Shared.Infrastructure.Events
                 throw new InvalidCastException($"Failed to parse content of file '{EventStreamConstants.NumberOfProcessedEventsFilePath}' to int, content: '{content}'.");
 
             return numberOfProcessedEvents;
-        }
-
-        public void PersistsNumberOfProcessedEvents(long numberOfProcessedEvents)
-        {
-            if (!Directory.Exists(EventStreamConstants.NumberOfProcessedEventsDirectory))
-            {
-                Directory.CreateDirectory(EventStreamConstants.NumberOfProcessedEventsDirectory);
-            }
-
-            File.WriteAllText(
-                EventStreamConstants.NumberOfProcessedEventsFilePath,
-                numberOfProcessedEvents.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

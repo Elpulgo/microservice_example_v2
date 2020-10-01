@@ -32,10 +32,8 @@ namespace Flights.Processor
                     services.AddSingleton<IEventStoreContext>(sp => new EventStoreContext(eventstoreConnection, eventstoreStreamName));
 
                     services.AddSingleton<IFlightWriteRepository, FlightWriteRepository>();
-                    services.AddSingleton<IProcessedEventCountHandler, ProcessedEventCountHandler>();
 
                     services.AddSingleton<IFlightEventStoreSubscriber>(sp => new FlightEventStoreSubscriber(
-                        sp.GetRequiredService<IProcessedEventCountHandler>(),
                         sp.GetRequiredService<IEventStoreContext>(),
                         sp.GetRequiredService<IFlightWriteRepository>(),
                         eventStoreGroupName));
