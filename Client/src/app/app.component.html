@@ -1,0 +1,24 @@
+<div class="d-flex">
+  <div class="col-6">
+    <h1>Flights</h1>
+    <div>
+      <div class="form-group">
+        <label for="flightOriginInput">Origin</label>
+        <input class="form-control" id="flightOriginInput" [(ngModel)]="flightOrigin">
+      </div>
+      <div class="form-group">
+        <label for="flightDestinationInput">Destination</label>
+        <input class="form-control" id="flightDestinationInput" [(ngModel)]="flightDestination">
+      </div>
+      <div class="form-group">
+        <label for="flightNumberInput">FlightNumber</label>
+        <input class="form-control" id="flightNumberInput" [(ngModel)]="flightNumber">
+      </div>
+
+      <button mat-flat-button color="primary">Create flight</button>
+    </div>
+  </div>
+  <div class="col-6">
+    <h1>Audit Log for events</h1>
+  </div>
+</div>
