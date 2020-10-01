@@ -11,9 +11,7 @@ namespace Passengers.Application.RPC
         private readonly RpcClient m_RpcClient;
 
         public FlightRpcClient(RpcClient rpcClient)
-        {
-            m_RpcClient = rpcClient ?? throw new ArgumentNullException(nameof(rpcClient));
-        }
+            => m_RpcClient = rpcClient ?? throw new ArgumentNullException(nameof(rpcClient));
 
         public async Task<(bool Success, string FailReason)> AllPassengersBoardedAsync(Guid flightId)
         {
