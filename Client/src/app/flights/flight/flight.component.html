@@ -1,0 +1,27 @@
+<div class="d-flex flex-column">
+    <div class="col-12 d-flex flex-row">
+        <div class="col-3">
+            <span class="">
+                {{flight.origin}}
+            </span>
+        </div>
+        <div class="col-3">
+            <span class="">
+                {{flight.destination}}
+            </span>
+        </div>
+        <div class="col-3">
+            <span class="badge badge-primary">
+                {{flight.flightNumber}}
+            </span>
+        </div>
+        <div class="col-3">
+            <span class="bold">
+                {{displayStatus(flight.status)}}
+            </span>
+        </div>
+    </div>
+    <div class="col-10 offset-2" *ngFor="let key of [1,5,7,8,9]">
+        <app-passenger></app-passenger>
+    </div>
+</div>
