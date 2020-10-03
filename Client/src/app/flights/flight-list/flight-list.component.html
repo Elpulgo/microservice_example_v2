@@ -1,0 +1,21 @@
+<div class="d-flex flex-column">
+    <div class="col-12 d-flex flex-row">
+        <div class="col-3">
+            <h2><u>Origin</u></h2>
+        </div>
+        <div class="col-3">
+            <h2><u>Destination</u></h2>
+        </div>
+        <div class="col-3">
+            <h2><u>Flight number</u></h2>
+        </div>
+        <div class="col-3">
+            <h2><u>Status</u></h2>
+        </div>
+    </div>
+</div>
+<div *ngFor="let flight of flights">
+    <hr />
+    <app-flight [flight]="flight"></app-flight>
+    <app-passenger-list [passengers]="passengers"></app-passenger-list>
+</div>

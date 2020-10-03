@@ -1,0 +1,14 @@
+<div class="form-group">
+    <label for="flightOriginInput">Origin</label>
+    <input class="form-control" id="flightOriginInput" [(ngModel)]="flightOrigin">
+</div>
+<div class="form-group">
+    <label for="flightDestinationInput">Destination</label>
+    <input class="form-control" id="flightDestinationInput" [(ngModel)]="flightDestination">
+</div>
+<div class="form-group">
+    <label for="flightNumberInput">Flight number</label>
+    <input class="form-control" id="flightNumberInput" [(ngModel)]="flightNumber">
+</div>
+
+<button mat-flat-button color="primary" (click)="createFlight()">Create flight</button>
