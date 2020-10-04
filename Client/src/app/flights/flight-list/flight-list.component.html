@@ -1,8 +1,10 @@
 <div *ngFor="let flightPassengerMap of flightsPassengersMap">
-    <div class="card mb-2">
+    <div class="card mb-4">
         <div class="card-body">
-          <app-flight [flight]="flightPassengerMap.flight"></app-flight>
-          <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>      
+            <div class="card-title">
+                <app-flight [flight]="flightPassengerMap.flight"></app-flight>
+            </div>
+            <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>
         </div>
-      </div>
+    </div>
 </div>

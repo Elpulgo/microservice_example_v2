@@ -13,7 +13,8 @@ namespace Passengers.Application.Mapper
             return new Passenger()
             {
                 Name = command.Name,
-                FlightId = command.FlightId
+                FlightId = command.FlightId,
+                Status = PassengerStatus.CheckedIn
             };
         }
 
