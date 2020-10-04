@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Passenger } from '../passenger/passenger';
+import { Passenger } from '../models/passenger';
 
 @Component({
   selector: 'app-passenger-list',

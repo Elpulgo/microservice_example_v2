@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Passenger } from 'src/app/passengers/passenger/passenger';
-import { Flight } from '../flight/flight';
+import { PassengerService } from 'src/app/passengers/services/passenger.service';
+import { Passenger } from '../../passengers/models/passenger';
+import { Flight } from '../models/flight';
+import { FlightService } from '../services/flight-service';
+import { FlightPassengersMap } from './flight-passengers-map';
 
 @Component({
   selector: 'app-flight-list',
@@ -9,15 +12,26 @@ import { Flight } from '../flight/flight';
 })
 
 export class FlightListComponent implements OnInit {
-  @Input() flights: Flight[];
+  public flightsPassengersMap: FlightPassengersMap[] = [];
 
-  public passengers: Passenger[] = [];
+  constructor(
+    private flightService: FlightService,
+    private passengerService: PassengerService) { }
 
-  constructor() { }
+  async ngOnInit(): Promise<void> {
+    await this.loadFlights();
+  }
 
-  ngOnInit(): void {
-    for (var i = 0; i < 4; i++) {
-      this.passengers.push({ name: `Oscar - ${i}`, status: i });
+  private async loadFlights(): Promise<void> {
+    const flights = await this.flightService.getAllFlights();
+
+    for (const flight of flights) {
+      const passengers = await this.loadPassengersForFlight(flight.id);
+      this.flightsPassengersMap.push({ flight, passengers });
     }
+  }
+
+  private async loadPassengersForFlight(flightId: string): Promise<Passenger[]> {
+    return await this.passengerService.getAllPassengersForFlight(flightId);
   }
 }

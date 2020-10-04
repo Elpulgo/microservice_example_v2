@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Flight } from './flight';
-import { FlightExtensions } from './flightExtensions';
-import { FlightStatus } from './flightStatus';
+import { FlightStatus } from '../models/flightStatus';
+import { Flight } from '../models/flight';
 
 @Component({
   selector: 'app-flight',

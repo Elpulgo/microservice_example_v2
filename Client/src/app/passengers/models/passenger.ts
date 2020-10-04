@@ -1,6 +1,8 @@
 import { PassengerStatus } from './passengerStatus'
 
-export class Passenger {
+export interface Passenger {
     name: string;
     status: PassengerStatus;
+    id: string;
+    flightId: string;
 }

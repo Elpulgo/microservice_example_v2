@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Flight } from '../flight/flight';
-import { FlightStatus } from '../flight/flightStatus';
+import { CreateFlightModel } from '../models/createFlightModel';
+import { FlightService } from '../services/flight-service';
 
 @Component({
   selector: 'app-create-flight',
@@ -13,28 +13,37 @@ export class CreateFlightComponent implements OnInit {
   public flightOrigin: string;
   public flightDestination: string;
 
-  constructor() { }
+  constructor(private flightService: FlightService) { }
 
   ngOnInit(): void {
   }
 
-  public createFlight(): void {
+  public async createFlight(): Promise<void> {
 
     // TODO: Call flight service.. Then pass event to flight-list to read flights when getting OK back from server
     console.log(this.flightDestination);
     console.log(this.flightOrigin);
     console.log(this.flightNumber);
 
-    const newFlight: Flight = {
+    const newFlight: CreateFlightModel = {
       origin: this.flightOrigin,
       destination: this.flightDestination,
-      flightNumber: this.flightNumber,
-      id: "0",
-      status: FlightStatus.None
+      flightNumber: this.flightNumber
     };
 
-    // this.flights.push(newFlight);
+    const response = await this.flightService.createFlight(newFlight);
 
+    if (response == null || !response.success) {
+      console.log("apparently failed..");
+      console.log(`Error: ${response.error}`);
+      console.log(`Stacktrace: ${response.stacktrace}`);
+    } else {
+      console.log(`succeded! id: ${response.id}`);
+      this.clearInput();
+    }
+  }
+
+  private clearInput(): void {
     this.flightNumber = "";
     this.flightOrigin = "";
     this.flightDestination = "";
