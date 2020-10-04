@@ -1,21 +1,8 @@
-<div class="d-flex flex-column">
-    <div class="col-12 d-flex flex-row">
-        <div class="col-3">
-            <h2><u>Origin</u></h2>
-        </div>
-        <div class="col-3">
-            <h2><u>Destination</u></h2>
-        </div>
-        <div class="col-3">
-            <h2><u>Flight number</u></h2>
-        </div>
-        <div class="col-3">
-            <h2><u>Status</u></h2>
-        </div>
-    </div>
-</div>
 <div *ngFor="let flightPassengerMap of flightsPassengersMap">
-    <hr />
-    <app-flight [flight]="flightPassengerMap.flight"></app-flight>
-    <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>
+    <div class="card mb-2">
+        <div class="card-body">
+          <app-flight [flight]="flightPassengerMap.flight"></app-flight>
+          <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>      
+        </div>
+      </div>
 </div>

@@ -9,10 +9,14 @@ import { Passenger } from '../models/passenger';
 export class PassengerListComponent implements OnInit {
 
   @Input() passengers: Passenger[];
-  
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  public createPassenger(): void {
+
   }
 
 }
