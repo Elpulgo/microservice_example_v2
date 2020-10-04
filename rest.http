@@ -4,7 +4,7 @@ POST http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Apan apanso8866n",
+    "name": "Apan Nilsson",
     "flightId": "de7fc179-764a-4213-a37d-0ee16198db40"
 }
 ### 
@@ -40,9 +40,9 @@ POST http://localhost:5000/api/flights HTTP/1.1
 content-type: application/json
 
 {
-    "destination": "Sverige",
-    "origin": "Norge",
-    "flightNumber": "KL123"
+    "destination": "New York",
+    "origin": "Dubai",
+    "flightNumber": "KKK123"
 }
 
 ### 

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Passenger } from './passenger';
-import { PassengerStatus } from './passengerStatus';
+import { Passenger } from '../models/passenger';
+import { PassengerStatus } from '../models/passengerStatus';
 
 @Component({
   selector: 'app-passenger',

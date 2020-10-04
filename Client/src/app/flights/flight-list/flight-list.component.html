@@ -14,8 +14,8 @@
         </div>
     </div>
 </div>
-<div *ngFor="let flight of flights">
+<div *ngFor="let flightPassengerMap of flightsPassengersMap">
     <hr />
-    <app-flight [flight]="flight"></app-flight>
-    <app-passenger-list [passengers]="passengers"></app-passenger-list>
+    <app-flight [flight]="flightPassengerMap.flight"></app-flight>
+    <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>
 </div>
