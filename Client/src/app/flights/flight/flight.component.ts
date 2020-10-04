@@ -19,4 +19,8 @@ export class FlightComponent implements OnInit {
   public displayStatus(status: FlightStatus): string {
     return FlightStatus[status];
   }
+
+  public changeFlightStatus(): void {
+
+  }
 }

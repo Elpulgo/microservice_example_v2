@@ -1,27 +1,36 @@
 <div class="d-flex flex-column">
     <div class="col-12 d-flex flex-row">
-        <div class="col-3">
+        <div class="col-2">
+            <div class="bold mb-2"><u>Origin</u></div>
             <span class="">
                 {{flight.origin}}
             </span>
         </div>
-        <div class="col-3">
+        <div class="col-2">
+            <div class="bold mb-2"><u>Destination</u></div>
             <span class="">
                 {{flight.destination}}
             </span>
         </div>
-        <div class="col-3">
-            <span class="badge badge-primary">
+        <div class="col-1">
+            <div class="bold mb-2"><u>#</u></div>
+            <span style="font-weight:bold;">
                 {{flight.flightNumber}}
             </span>
         </div>
         <div class="col-3">
+            <div class="bold mb-2"><u>Status</u></div>
             <span class="bold">
                 {{displayStatus(flight.status)}}
             </span>
         </div>
-    </div>
-    <div class="col-10 offset-2" *ngFor="let key of [1,5,7,8,9]">
-        <app-passenger></app-passenger>
+        <div class="col-4 d-flex flex-row">
+            <div class="col-6">
+                <button type="button" class="btn btn-primary btn-sm" (click)="changeFlightStatus()">Disembark</button>
+            </div>
+            <div class="col-6">
+                <button type="button" class="btn btn-primary btn-sm" disabled="true" (click)="changeFlightStatus()">Land</button>
+            </div>
+        </div>
     </div>
 </div>
