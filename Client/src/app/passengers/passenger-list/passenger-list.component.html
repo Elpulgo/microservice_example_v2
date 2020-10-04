@@ -1,16 +1,22 @@
-<hr />
+<hr style="border:1px solid red;" />
 <div class="d-flex flex-column">
     <div class="row">
-        <div class="col-4 offset-1 d-flex flex-row">
-            <div><u>Passengers</u></div>
-        </div>
-        <div class="col-7 d-flex flex-row">
-            <button type="button" class="btn btn-primary btn-sm" (click)="createPassenger()">Add passenger to
-                flight</button>
+        <div class="col-12 d-flex flex-row">
+            <div class="col-6">
+                <div *ngIf="passengers.length == 0" style="font-weight: bold;">No passengers on flight</div>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary btn-sm" (click)="createPassenger()">Add
+                    passenger</button>
+            </div>
         </div>
     </div>
     <div *ngFor="let passenger of passengers">
         <hr />
+        <div class="d-flex">
+            <div class="col-4 mb-2"><u>Name</u></div>
+            <div class="col-4 mb-2"><u>Status</u></div>
+        </div>
         <app-passenger [passenger]="passenger"></app-passenger>
     </div>
 </div>

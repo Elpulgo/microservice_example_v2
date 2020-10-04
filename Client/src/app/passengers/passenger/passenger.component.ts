@@ -20,4 +20,8 @@ export class PassengerComponent implements OnInit {
   public displayStatus(status: PassengerStatus): string {
     return PassengerStatus[status];
   }
+
+  public boardPassenger(): void {
+
+  }
 }
