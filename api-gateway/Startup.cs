@@ -21,7 +21,7 @@ namespace api_gateway
         {
             services.AddCors(c => c.AddPolicy(
                 CorsPolicyName,
-                options => options.AllowAnyOrigin().AllowAnyHeader()));
+                options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
             services.AddOcelot();
             services.AddControllers();

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Passenger } from '../models/passenger';
 import { PassengerStatus } from '../models/passengerStatus';
+import { PassengerService } from '../services/passenger.service';
 
 @Component({
   selector: 'app-passenger',
@@ -11,9 +12,12 @@ export class PassengerComponent implements OnInit {
 
   @Input() passenger: Passenger;
 
-  constructor() { }
+  public hasBoarded: boolean;
+
+  constructor(private passengerService: PassengerService) { }
 
   ngOnInit(): void {
+    this.setBoardButtonEnabledMode();
   }
 
 
@@ -21,7 +25,20 @@ export class PassengerComponent implements OnInit {
     return PassengerStatus[status];
   }
 
-  public boardPassenger(): void {
+  public async boardPassenger(): Promise<void> {
+    let passenger: Passenger = { ...this.passenger, status: PassengerStatus.Boarded };
 
+    const response = await this.passengerService.updatePassenger(passenger);
+    if (response != null && response.success) {
+      const passenger = await this.passengerService.getPassengerById(this.passenger.id);
+      this.passenger = passenger;
+      this.hasBoarded = true;
+    }
+  }
+
+  private setBoardButtonEnabledMode(): void {
+    this.hasBoarded = 
+      this.passenger.status != PassengerStatus.None && 
+      this.passenger.status != PassengerStatus.CheckedIn;
   }
 }

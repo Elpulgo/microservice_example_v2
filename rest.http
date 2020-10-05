@@ -21,10 +21,10 @@ PUT http://localhost:5000/api/passengers HTTP/1.1
 content-type: application/json
 
 {
-    "id": "5b5328bd-d14f-47ea-8676-2d3ad252cd34",
-    "flightId": "058f4b09-b77f-49b1-9ecf-ce159bfd38a5",
-    "name": "Alf1",
-    "status": 2
+    "flightId":"de7fc179-764a-4213-a37d-0ee16198db40",
+    "name":"papa",
+    "status":2,
+    "id":"ec2ec83f-18eb-4359-92ab-3197145967c4"
 }
 
 ### 
