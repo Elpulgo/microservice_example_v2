@@ -27,6 +27,10 @@ export class FlightListComponent implements OnInit {
 
     for (const flight of flights) {
       const passengers = await this.loadPassengersForFlight(flight.id);
+
+      // TODO: Push this list to a service, which will hold a dictionary for flights, and update passengers status
+      // in this service once we board a passenger.
+      // Can then do a lookup if all passengers has boarded, and subsequently light up disembark button (do it with async pipe observable..)
       this.flightsPassengersMap.push({ flight, passengers });
     }
   }

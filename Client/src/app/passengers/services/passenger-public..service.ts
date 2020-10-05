@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseResponseModel } from 'src/app/shared/models/baseResponseModel';
 import { CreatePassengerModel } from '../models/createPassengerModel';
@@ -33,11 +33,41 @@ export class PassengerPublicService implements PassengerService {
   }
 
   async updatePassenger(passenger: Passenger): Promise<BaseResponseModel> {
-    throw new Error('Method not implemented.');
+    try {
+      const response = await this.httpClient.put<BaseResponseModel>(`${PASSENGER_BASE_URL}`, passenger)
+        .toPromise();
+
+      if (response.success) {
+        return response;
+      } else {
+        //TODO: Notify some error service
+        return null;
+      }
+    } catch (error) {
+      //TODO: Notify some error service
+      console.log(`Failed to update passenger: '${passenger.name}', error: ${error}`);
+      return null;
+    }
   }
 
   async deletePassenger(id: string): Promise<BaseResponseModel> {
-    throw new Error('Method not implemented.');
+    try {
+      const options = { params: new HttpParams().set('id', id) };
+
+      const response = await this.httpClient.delete<BaseResponseModel>(`${PASSENGER_BASE_URL}`, options)
+        .toPromise();
+
+      if (response.success) {
+        return response;
+      } else {
+        //TODO: Notify some error service
+        return null;
+      }
+    } catch (error) {
+      //TODO: Notify some error service
+      console.log(`Failed to delete passenger with id: '${id}', error: ${error}`);
+      return null;
+    }
   }
 
   async getAllPassengersForFlight(flightId: string): Promise<Passenger[]> {
