@@ -4,7 +4,8 @@
             <div class="card-title">
                 <app-flight [flight]="flightPassengerMap.flight"></app-flight>
             </div>
-            <app-passenger-list [passengers]="flightPassengerMap.passengers"></app-passenger-list>
+            <app-passenger-list [passengers]="flightPassengerMap.passengers" [flightId]="flightPassengerMap.flight.id">
+            </app-passenger-list>
         </div>
     </div>
 </div>
