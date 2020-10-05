@@ -13,6 +13,8 @@ export class CreateFlightComponent implements OnInit {
   public flightOrigin: string;
   public flightDestination: string;
 
+  public isVisible: boolean = false;
+
   constructor(private flightService: FlightService) { }
 
   ngOnInit(): void {
@@ -41,6 +43,13 @@ export class CreateFlightComponent implements OnInit {
       console.log(`succeded! id: ${response.id}`);
       this.clearInput();
     }
+  }
+
+  public toggleCreateFlight(): void {
+    if (this.isVisible)
+      return;
+
+    this.isVisible = true;
   }
 
   private clearInput(): void {
