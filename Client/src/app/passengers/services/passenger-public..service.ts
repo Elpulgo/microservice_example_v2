@@ -15,7 +15,21 @@ export class PassengerPublicService implements PassengerService {
   constructor(private httpClient: HttpClient) { }
 
   async createPassenger(createPassengerModel: CreatePassengerModel): Promise<CreatePassengerResponseModel> {
-    throw new Error('Method not implemented.');
+    try {
+      const response = await this.httpClient.post<CreatePassengerResponseModel>(`${PASSENGER_BASE_URL}`, createPassengerModel)
+        .toPromise();
+
+      if (response.success) {
+        return response;
+      } else {
+        // TODO: Notify some error service
+        return null;
+      }
+    } catch (error) {
+      //TODO: Notify some error service
+      console.log(`Failed to create passenger: '${createPassengerModel.name}', error: ${error}`);
+      return null;
+    }
   }
 
   async updatePassenger(passenger: Passenger): Promise<BaseResponseModel> {
@@ -35,6 +49,19 @@ export class PassengerPublicService implements PassengerService {
     } catch (error) {
       // TODO: Notify some error service
       console.log(`Failed to get all passengers for flight ${flightId}: ${error}`);
+      return null;
+    }
+  }
+
+  async getPassengerById(id: string): Promise<Passenger> {
+    try {
+      const response = await this.httpClient.get<Passenger>(`${PASSENGER_BASE_URL}/${id}`)
+        .toPromise();
+
+      return response;
+    } catch (error) {
+      // TODO: Notify some error service
+      console.log(`Failed to get passenger: ${error}`);
       return null;
     }
   }

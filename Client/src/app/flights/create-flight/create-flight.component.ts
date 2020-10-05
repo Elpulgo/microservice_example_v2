@@ -46,10 +46,7 @@ export class CreateFlightComponent implements OnInit {
   }
 
   public toggleCreateFlight(): void {
-    if (this.isVisible)
-      return;
-
-    this.isVisible = true;
+    this.isVisible = !this.isVisible;
   }
 
   private clearInput(): void {
