@@ -17,6 +17,7 @@ import { FlightPublicService } from './flights/services/flight-public.service';
 import { FlightService } from './flights/services/flight-service';
 import { PassengerService } from './passengers/services/passenger.service';
 import { PassengerPublicService } from './passengers/services/passenger-public..service';
+import { EventService } from './events/event.service';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { PassengerPublicService } from './passengers/services/passenger-public..
   ],
   providers: [
     { provide: FlightService, useClass: FlightPublicService },
-    { provide: PassengerService, useClass: PassengerPublicService }
+    { provide: PassengerService, useClass: PassengerPublicService },
+    EventService
   ],
   bootstrap: [AppComponent]
 })
