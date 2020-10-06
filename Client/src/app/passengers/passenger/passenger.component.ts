@@ -11,6 +11,7 @@ import { PassengerService } from '../services/passenger.service';
 export class PassengerComponent implements OnInit {
 
   @Input() passenger: Passenger;
+  @Input() flightId: string;
 
   public hasBoarded: boolean;
 
@@ -37,8 +38,8 @@ export class PassengerComponent implements OnInit {
   }
 
   private setBoardButtonEnabledMode(): void {
-    this.hasBoarded = 
-      this.passenger.status != PassengerStatus.None && 
+    this.hasBoarded =
+      this.passenger.status != PassengerStatus.None &&
       this.passenger.status != PassengerStatus.CheckedIn;
   }
 }
