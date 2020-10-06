@@ -24,8 +24,11 @@
         </span>
     </div>
     <div class="col-3 d-flex justify-content-end">
-            <button type="button" style="background-color: lightgreen;" class="btn btn-sm mr-2" (click)="changeFlightStatus()">Disembark</button>
-            <button type="button" class="btn btn-primary btn-sm" disabled="true"
-                (click)="changeFlightStatus()">Land</button>
+        <button type="button" style="background-color: lightgreen;" [hidden]="!isDisembarkButtonVisible"
+            class="btn btn-sm mr-2" (click)="changeFlightStatus()">Disembark
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" disabled="true" [hidden]="!isLandButtonVisible"
+            (click)="changeFlightStatus()">Land
+        </button>
     </div>
 </div>
