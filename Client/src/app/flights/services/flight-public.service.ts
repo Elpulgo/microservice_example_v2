@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FLIGHT_BASE_URL } from './endpoint-constants';
 import { CreateFlightResponseModel } from '../models/createFlightResponseModel';
 import { BaseResponseModel } from '../../shared/models/baseResponseModel';
@@ -55,7 +55,15 @@ export class FlightPublicService implements FlightService {
 
   async deleteFlight(id: string): Promise<BaseResponseModel> {
     try {
-      const options = { params: new HttpParams().set('id', id) };
+
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        body: {
+          id
+        }
+      }
 
       const response = await this.httpClient.delete<BaseResponseModel>(
         FLIGHT_BASE_URL,

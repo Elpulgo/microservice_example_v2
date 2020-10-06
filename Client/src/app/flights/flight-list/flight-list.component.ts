@@ -20,6 +20,7 @@ export class FlightListComponent implements OnInit, OnDestroy {
   public flightsPassengersMap: FlightPassengersMap[] = [];
   public FlightStatusType: typeof FlightStatus = FlightStatus;
   private _flightArrivedSubscription: Subscription;
+  private _flightDeletedSubscription: Subscription;
 
   constructor(
     private flightService: FlightService,
@@ -34,10 +35,16 @@ export class FlightListComponent implements OnInit, OnDestroy {
         let map = this.flightsPassengersMap.find(f => f.flight.id === s.flightId);
         map.flight.status === FlightStatus.Arrived;
       });
+
+    this._flightDeletedSubscription = this.eventService.flightDeleted$
+      .subscribe(async s => {
+        await this.reload();
+      });
   }
 
   ngOnDestroy(): void {
     this._flightArrivedSubscription.unsubscribe();
+    this._flightDeletedSubscription.unsubscribe();
   }
 
   private async loadFlights(): Promise<void> {
@@ -49,6 +56,11 @@ export class FlightListComponent implements OnInit, OnDestroy {
     }
 
     this.eventService.updateFlightMap(this.flightsPassengersMap);
+  }
+
+  private async reload(): Promise<void> {
+    this.flightsPassengersMap = [];
+    await this.loadFlights();
   }
 
   private async loadPassengersForFlight(flightId: string): Promise<Passenger[]> {

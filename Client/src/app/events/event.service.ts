@@ -7,6 +7,7 @@ import { Flight } from '../flights/models/flight';
 import { Passenger } from '../passengers/models/passenger';
 import { PassengerStatus } from '../passengers/models/passengerStatus';
 import { FlightStatus } from '../flights/models/flightStatus';
+import { FlightDeletedEvent } from './flightDeletedEvent';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,7 @@ export class EventService {
     public allPassengersBoardedForFlight$: EventEmitter<AllPassengersBoardedEvent> = new EventEmitter<AllPassengersBoardedEvent>();
     public flightDisembarked$: EventEmitter<FlightDisembarkedEvent> = new EventEmitter<FlightDisembarkedEvent>();
     public flightArrived$: EventEmitter<FlightArrivedEvent> = new EventEmitter<FlightArrivedEvent>();
+    public flightDeleted$: EventEmitter<FlightDeletedEvent> = new EventEmitter<FlightDeletedEvent>();
 
     private _flightMap: Map<string, FlightPassengersMap> = new Map<string, FlightPassengersMap>();
 
@@ -46,6 +48,10 @@ export class EventService {
 
     public flightArrived(flight: Flight): void {
         this.flightArrived$.emit({ flightId: flight.id });
+    }
+
+    public flightDeleted(flight: Flight): void {
+        this.flightDeleted$.emit({ flightId: flight.id });
     }
 
     public passengerBoarded(passenger: Passenger, flightId: string): void {

@@ -17,9 +17,11 @@ export class FlightComponent implements OnInit, OnDestroy {
 
   public isDisembarkButtonVisible: boolean;
   public isLandButtonVisible: boolean;
+  public isDeleteButtonVisible: boolean;
 
   public isLanding: boolean = false;
   public isDisembarking: boolean = false;
+  public isDeleting: boolean = false;
 
   private _allPassengersBoardedSubscription: Subscription;
 
@@ -35,7 +37,7 @@ export class FlightComponent implements OnInit, OnDestroy {
         this.flight.status = FlightStatus.AllBoarded;
         this.setButtonVisibility();
       });
-      
+
     this.setButtonVisibility();
   }
 
@@ -85,14 +87,36 @@ export class FlightComponent implements OnInit, OnDestroy {
       this.setButtonVisibility();
       this.eventService.flightArrived(this.flight);
     } else {
-      console.log("Failed to land flight!");
+      console.log(`Failed to land flight!`);
     }
 
     this.isLanding = false;
   }
 
+  public async delete(): Promise<void> {
+    if (this.flight.status !== FlightStatus.Arrived) {
+      alert("Flight has not yet arrived and can't be deleted!");
+      return;
+    }
+
+    this.isDeleting = true;
+
+    const response = await this.flightService.deleteFlight(this.flight.id);
+    if (response != null && response.success) {
+      this.eventService.flightDeleted(this.flight);
+    } else {
+      console.log("Failed to delete flight!");
+    }
+
+
+    this.isDeleting = false;
+  }
+
+
+
   private setButtonVisibility(): void {
     this.isDisembarkButtonVisible = this.flight.status == FlightStatus.AllBoarded;
     this.isLandButtonVisible = this.flight.status == FlightStatus.Disembarked;
+    this.isDeleteButtonVisible = this.flight.status == FlightStatus.Arrived;
   }
 }

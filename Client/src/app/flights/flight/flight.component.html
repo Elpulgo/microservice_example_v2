@@ -30,5 +30,8 @@
         <button type="button" class="btn btn-primary btn-sm" [disabled]="isLanding" [hidden]="!isLandButtonVisible"
             (click)="land()">Land
         </button>
+        <button type="button" class="btn btn-danger btn-sm" [disabled]="isDeleting" [hidden]="!isDeleteButtonVisible"
+            (click)="delete()">Delete
+        </button>
     </div>
 </div>
