@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { EventService } from 'src/app/events/event.service';
 import { Passenger } from '../models/passenger';
 import { PassengerStatus } from '../models/passengerStatus';
 import { PassengerService } from '../services/passenger.service';
@@ -15,7 +16,9 @@ export class PassengerComponent implements OnInit {
 
   public hasBoarded: boolean;
 
-  constructor(private passengerService: PassengerService) { }
+  constructor(
+    private passengerService: PassengerService,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
     this.setBoardButtonEnabledMode();
@@ -34,6 +37,7 @@ export class PassengerComponent implements OnInit {
       const passenger = await this.passengerService.getPassengerById(this.passenger.id);
       this.passenger = passenger;
       this.hasBoarded = true;
+      this.eventService.passengerBoarded(this.passenger, this.flightId);
     }
   }
 

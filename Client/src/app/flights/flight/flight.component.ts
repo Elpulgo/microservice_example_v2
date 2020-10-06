@@ -1,14 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FlightStatus } from '../models/flightStatus';
 import { Flight } from '../models/flight';
 import { FlightService } from '../services/flight-service';
+import { EventService } from 'src/app/events/event.service';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-flight',
   templateUrl: './flight.component.html',
   styleUrls: ['./flight.component.scss']
 })
-export class FlightComponent implements OnInit {
+export class FlightComponent implements OnInit, OnDestroy {
 
   @Input() flight: Flight;
 
@@ -18,10 +21,26 @@ export class FlightComponent implements OnInit {
   public isLanding: boolean = false;
   public isDisembarking: boolean = false;
 
-  constructor(private flightService: FlightService) { }
+  private _allPassengersBoardedSubscription: Subscription;
+
+  constructor(
+    private flightService: FlightService,
+    public eventService: EventService) { }
+
 
   ngOnInit(): void {
+    this._allPassengersBoardedSubscription = this.eventService.allPassengersBoardedForFlight$
+      .pipe(filter(f => f.flightId === this.flight.id))
+      .subscribe(s => {
+        this.flight.status = FlightStatus.AllBoarded;
+        this.setButtonVisibility();
+      });
+      
     this.setButtonVisibility();
+  }
+
+  ngOnDestroy(): void {
+    this._allPassengersBoardedSubscription.unsubscribe();
   }
 
   public displayStatus(status: FlightStatus): string {
@@ -38,9 +57,11 @@ export class FlightComponent implements OnInit {
 
     const flight = { ...this.flight, status: FlightStatus.Disembarked };
     const response = await this.flightService.updateFlight(flight);
+
     if (response != null && response.success) {
       this.flight = flight;
       this.setButtonVisibility();
+      this.eventService.flightDisembarked(this.flight);
     } else {
       console.log("Failed to disembark flight!");
     }
@@ -62,6 +83,7 @@ export class FlightComponent implements OnInit {
     if (response != null && response.success) {
       this.flight = flight;
       this.setButtonVisibility();
+      this.eventService.flightArrived(this.flight);
     } else {
       console.log("Failed to land flight!");
     }

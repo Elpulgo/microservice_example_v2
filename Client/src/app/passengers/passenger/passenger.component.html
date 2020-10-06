@@ -10,6 +10,7 @@
         </span>
     </div>
     <div class="col-4 d-flex justify-content-end">
-        <button type="button" style="background-color: green;" [disabled]="hasBoarded" class="btn btn-secondary btn-sm" (click)="boardPassenger()">Board</button>
+        <button type="button" style="background-color: green;" [hidden]="hasBoarded" class="btn btn-secondary btn-sm"
+            (click)="boardPassenger()">Board</button>
     </div>
 </div>
