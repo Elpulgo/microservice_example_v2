@@ -1,4 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { EventService } from 'src/app/events/event.service';
+import { FlightStatus } from 'src/app/flights/models/flightStatus';
 import { Passenger } from '../models/passenger';
 import { PassengerService } from '../services/passenger.service';
 
@@ -7,17 +11,45 @@ import { PassengerService } from '../services/passenger.service';
   templateUrl: './passenger-list.component.html',
   styleUrls: ['./passenger-list.component.scss']
 })
-export class PassengerListComponent implements OnInit {
+export class PassengerListComponent implements OnInit, OnDestroy {
 
   @Input() passengers: Passenger[];
   @Input() flightId: string;
 
   public isPassengerCreateVisible: boolean = false;
   public passengerName: string;
+  public isAddPassengerVisible: boolean = true;
 
-  constructor(private passengerService: PassengerService) { }
+  private _flightHasDisembarkedSubscription: Subscription;
+  private _flightHasArrivedSubscription: Subscription;
+
+  constructor(
+    private passengerService: PassengerService,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
+    this._flightHasDisembarkedSubscription = this.eventService.flightDisembarked$
+      .pipe(filter(f => f.flightId === this.flightId))
+      .subscribe(s => {
+        this.isAddPassengerVisible = false;
+      });
+
+    this._flightHasArrivedSubscription = this.eventService.flightArrived$
+      .pipe(filter(f => f.flightId === this.flightId))
+      .subscribe(s => {
+        this.isAddPassengerVisible = false;
+        this.reloadPassengers();
+      });
+
+    const flightMap = this.eventService.flightMap.get(this.flightId);
+    if (flightMap) {
+      this.isAddPassengerVisible = flightMap.flight.status !== (FlightStatus.Arrived || FlightStatus.Disembarked);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this._flightHasDisembarkedSubscription.unsubscribe();
+    this._flightHasArrivedSubscription.unsubscribe();
   }
 
   public async createPassenger(): Promise<void> {
@@ -48,5 +80,10 @@ export class PassengerListComponent implements OnInit {
     }
 
     return true;
+  }
+
+  private async reloadPassengers(): Promise<void> {
+    const passengers = await this.passengerService.getAllPassengersForFlight(this.flightId);
+    this.passengers = passengers;
   }
 }

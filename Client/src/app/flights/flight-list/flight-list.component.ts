@@ -1,7 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { EventService } from 'src/app/events/event.service';
+import { FlightArrivedEvent } from 'src/app/events/flightArrivedEvent';
 import { PassengerService } from 'src/app/passengers/services/passenger.service';
 import { Passenger } from '../../passengers/models/passenger';
 import { Flight } from '../models/flight';
+import { FlightStatus } from '../models/flightStatus';
 import { FlightService } from '../services/flight-service';
 import { FlightPassengersMap } from './flight-passengers-map';
 
@@ -11,15 +15,29 @@ import { FlightPassengersMap } from './flight-passengers-map';
   styleUrls: ['./flight-list.component.scss']
 })
 
-export class FlightListComponent implements OnInit {
+export class FlightListComponent implements OnInit, OnDestroy {
+
   public flightsPassengersMap: FlightPassengersMap[] = [];
+  public FlightStatusType: typeof FlightStatus = FlightStatus;
+  private _flightArrivedSubscription: Subscription;
 
   constructor(
     private flightService: FlightService,
-    private passengerService: PassengerService) { }
+    private passengerService: PassengerService,
+    private eventService: EventService) { }
 
   async ngOnInit(): Promise<void> {
     await this.loadFlights();
+
+    this._flightArrivedSubscription = this.eventService.flightArrived$
+      .subscribe((s: FlightArrivedEvent) => {
+        let map = this.flightsPassengersMap.find(f => f.flight.id === s.flightId);
+        map.flight.status === FlightStatus.Arrived;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._flightArrivedSubscription.unsubscribe();
   }
 
   private async loadFlights(): Promise<void> {
@@ -27,12 +45,10 @@ export class FlightListComponent implements OnInit {
 
     for (const flight of flights) {
       const passengers = await this.loadPassengersForFlight(flight.id);
-
-      // TODO: Push this list to a service, which will hold a dictionary for flights, and update passengers status
-      // in this service once we board a passenger.
-      // Can then do a lookup if all passengers has boarded, and subsequently light up disembark button (do it with async pipe observable..)
       this.flightsPassengersMap.push({ flight, passengers });
     }
+
+    this.eventService.updateFlightMap(this.flightsPassengersMap);
   }
 
   private async loadPassengersForFlight(flightId: string): Promise<Passenger[]> {
