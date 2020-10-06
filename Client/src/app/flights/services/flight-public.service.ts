@@ -38,7 +38,7 @@ export class FlightPublicService implements FlightService {
     try {
       const response = await this.httpClient.put<BaseResponseModel>(
         FLIGHT_BASE_URL,
-        {})
+        flight)
         .toPromise();
 
       if (response.success)
