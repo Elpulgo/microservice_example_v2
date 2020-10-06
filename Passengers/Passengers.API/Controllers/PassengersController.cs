@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Passengers.Application.Commands;
 using Passengers.Application.Queries;
 using Passengers.Application.Responses;
@@ -30,12 +28,6 @@ namespace Passengers.API.Controllers
         [ProducesResponseType(typeof(PassengerCommandResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreatePassenger([FromBody] CreatePassengerCommand command)
             => Ok((await m_Mediator.Send(command)));
-
-        [HttpDelete]
-        [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> DeletePassengerById([FromBody] DeletePassengerCommand command)
-            => Ok((await m_Mediator.Send(command)));
-
 
         [HttpPut]
         [ProducesResponseType(typeof(CommandResponseBase), (int)HttpStatusCode.OK)]
