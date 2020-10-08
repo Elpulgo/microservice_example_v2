@@ -11,16 +11,14 @@ namespace Shared.Infrastructure.Events
         private readonly IEventStoreContext m_Context;
 
         public EventStoreReader(IEventStoreContext context)
-        {
-            m_Context = context;
-        }
+            => m_Context = context ?? throw new System.ArgumentNullException(nameof(context));
 
         public async Task<IReadOnlyList<ResolvedEvent>> ReadAll(string streamName)
         {
-            if (string.IsNullOrEmpty(streamName))
-                return new List<ResolvedEvent>();
-
             var events = new List<ResolvedEvent>();
+
+            if (string.IsNullOrEmpty(streamName))
+                return events;
 
             StreamEventsSlice currentSlice;
             long nextSliceStart = 0;

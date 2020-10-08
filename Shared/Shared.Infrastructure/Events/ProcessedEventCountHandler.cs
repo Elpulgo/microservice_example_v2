@@ -20,8 +20,6 @@ namespace Shared.Infrastructure.Events
         private ProcessedEventCountHandler()
             => m_CurrentEventNumber = ReadNumberOfProcessedEventsFromDisk();
 
-        // Note! Should throw exception if content can't be read. Shouldn't continue connecting to event stream then
-        // since we can't be sure where to process from.
         public int ReadNumberOfProcessedEvents()
         {
             lock (m_LockObject)

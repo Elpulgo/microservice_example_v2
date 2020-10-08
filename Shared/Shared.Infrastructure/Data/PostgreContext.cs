@@ -11,15 +11,13 @@ namespace Shared.Infrastructure
 
         public PostgreContext(string connectionString)
         {
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentException($"'{nameof(connectionString)}' cannot be null or empty", nameof(connectionString));
+
             m_ConnectionString = connectionString;
         }
 
         private NpgsqlConnection ConnectToPostgres()
-        {
-            if (string.IsNullOrEmpty(m_ConnectionString))
-                throw new ArgumentNullException(nameof(m_ConnectionString));
-
-            return new NpgsqlConnection(m_ConnectionString);
-        }
+            => new NpgsqlConnection(m_ConnectionString);
     }
 }
