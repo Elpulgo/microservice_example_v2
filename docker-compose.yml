@@ -21,9 +21,20 @@ x-POSTGRES_PASSENGERS_DB_CONNECTION:
     POSTGRE_CONNECTION=Server=db-passengers;Port=5432;Database=Passengers;User Id=passengers_user;Password=passengers_user_pass;
 
 services:
+    client:
+        restart: always
+        container_name: ${DOCKER_REGISTRY}-Client
+        ports: 
+            - "80:80"
+        build:
+            context: .
+            dockerfile: ./Client/Dockerfile
+        networks: 
+            - microservice
+
     api-gateway:
        restart: always
-       container_name: ${DOCKER_REGISTRY-}api-gateway
+       container_name: ${DOCKER_REGISTRY}-API.Gateway
        ports:
            - "5000:80"
        build:
@@ -34,7 +45,7 @@ services:
 
     flights-api:
         restart: always
-        container_name: ${DOCKER_REGISTRY-}flights-api
+        container_name: ${DOCKER_REGISTRY}-Flights.API
         build:
             context: .
             dockerfile: ./Flights/Flights.API/Dockerfile
@@ -54,7 +65,7 @@ services:
 
     flights-processor:
         restart: always
-        container_name: ${DOCKER_REGISTRY-}flights-processor
+        container_name: ${DOCKER_REGISTRY}-Flights.Processor
         networks: 
             - microservice
         build:
@@ -73,7 +84,7 @@ services:
 
     passengers-api:
         restart: always
-        container_name: ${DOCKER_REGISTRY-}passengers-api
+        container_name: ${DOCKER_REGISTRY}-Passengers.API
         build:
             context: .
             dockerfile: ./Passengers/Passengers.API/Dockerfile
@@ -93,7 +104,7 @@ services:
 
     passengers-processor:
         restart: always
-        container_name: ${DOCKER_REGISTRY-}passengers-processor
+        container_name: ${DOCKER_REGISTRY}-Passengers.Processor
         networks: 
             - microservice
         build:
@@ -112,7 +123,7 @@ services:
 
     auditlog-api:
         restart: always
-        container_name: ${DOCKER_REGISTRY-}auditlog-api
+        container_name: ${DOCKER_REGISTRY}-Auditlog.API
         build:
             context: .
             dockerfile: ./AuditLog.API/Dockerfile
