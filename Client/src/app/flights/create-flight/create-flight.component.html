@@ -1,4 +1,4 @@
-<button mat-flat-button color="secondary" (click)="toggleCreateFlight()">Create flight</button>
+<button class="btn btn-secondary" (click)="toggleCreateFlight()">Create flight</button>
 <div class="card mt-4" [hidden]="!isVisible">
     <div class="card-body">
         <div class="card-title">
@@ -16,6 +16,7 @@
             <label for="flightNumberInput">Flight number</label>
             <input class="form-control" id="flightNumberInput" [(ngModel)]="flightNumber">
         </div>
-        <button mat-flat-button color="primary" style="float:right; background-color:green;" (click)="createFlight()">Create</button>
+        <button class="btn btn-primary" style="float:right; background-color:green;"
+            (click)="createFlight()">Create</button>
     </div>
 </div>

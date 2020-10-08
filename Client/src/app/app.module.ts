@@ -1,7 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -32,16 +30,12 @@ import { NotificationModule } from './notifications/notification.module';
   ],
   imports: [
     BrowserModule,
-    MatButtonModule,
-    MatGridListModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     NotificationModule
   ],
   exports: [
-    MatButtonModule,
-    MatGridListModule
   ],
   providers: [
     { provide: FlightService, useClass: FlightPublicService },
