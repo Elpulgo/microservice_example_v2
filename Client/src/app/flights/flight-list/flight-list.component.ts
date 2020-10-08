@@ -2,9 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventService } from 'src/app/events/event.service';
 import { FlightArrivedEvent } from 'src/app/events/flightArrivedEvent';
+import { FlightCreatedEvent } from 'src/app/events/flightCreatedEvent';
 import { PassengerService } from 'src/app/passengers/services/passenger.service';
 import { Passenger } from '../../passengers/models/passenger';
-import { Flight } from '../models/flight';
 import { FlightStatus } from '../models/flightStatus';
 import { FlightService } from '../services/flight-service';
 import { FlightPassengersMap } from './flight-passengers-map';
@@ -19,8 +19,8 @@ export class FlightListComponent implements OnInit, OnDestroy {
 
   public flightsPassengersMap: FlightPassengersMap[] = [];
   public FlightStatusType: typeof FlightStatus = FlightStatus;
-  private _flightArrivedSubscription: Subscription;
-  private _flightDeletedSubscription: Subscription;
+  private _subscriptions: Subscription[] = [];
+
 
   constructor(
     private flightService: FlightService,
@@ -30,21 +30,25 @@ export class FlightListComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     await this.loadFlights();
 
-    this._flightArrivedSubscription = this.eventService.flightArrived$
+    this._subscriptions.push(this.eventService.flightArrived$
       .subscribe((s: FlightArrivedEvent) => {
         let map = this.flightsPassengersMap.find(f => f.flight.id === s.flightId);
         map.flight.status === FlightStatus.Arrived;
-      });
+      }));
 
-    this._flightDeletedSubscription = this.eventService.flightDeleted$
+    this._subscriptions.push(this.eventService.flightDeleted$
       .subscribe(async s => {
         await this.reload();
-      });
+      }));
+
+    this._subscriptions.push(this.eventService.flightCreated$
+      .subscribe(async (flightCreatedEvent: FlightCreatedEvent) => {
+        await this.flightCreated(flightCreatedEvent.flightId);
+      }));
   }
 
   ngOnDestroy(): void {
-    this._flightArrivedSubscription.unsubscribe();
-    this._flightDeletedSubscription.unsubscribe();
+    this._subscriptions.forEach(f => f.unsubscribe());
   }
 
   private async loadFlights(): Promise<void> {
@@ -65,5 +69,15 @@ export class FlightListComponent implements OnInit, OnDestroy {
 
   private async loadPassengersForFlight(flightId: string): Promise<Passenger[]> {
     return await this.passengerService.getAllPassengersForFlight(flightId);
+  }
+
+  private async flightCreated(flightId: string): Promise<void> {
+    const flight = await this.flightService.getFlight(flightId);
+    if (flight == null)
+      return;
+
+    this.flightsPassengersMap.push({ flight, passengers: [] });
+    this.flightsPassengersMap = this.flightsPassengersMap.reverse();
+    this.eventService.updateFlightMap(this.flightsPassengersMap);
   }
 }

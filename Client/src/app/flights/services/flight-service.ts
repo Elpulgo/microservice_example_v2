@@ -10,4 +10,5 @@ export abstract class FlightService {
     abstract async updateFlight(flight: Flight): Promise<BaseResponseModel>;
     abstract async deleteFlight(id: string): Promise<BaseResponseModel>;
     abstract async getAllFlights(): Promise<Flight[]>;
+    abstract async getFlight(id: string): Promise<Flight>;
 }
