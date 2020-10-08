@@ -8,6 +8,7 @@ import { Passenger } from '../passengers/models/passenger';
 import { PassengerStatus } from '../passengers/models/passengerStatus';
 import { FlightStatus } from '../flights/models/flightStatus';
 import { FlightDeletedEvent } from './flightDeletedEvent';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +26,7 @@ export class EventService {
         return this._flightMap;
     }
 
-    constructor() {
+    constructor(private notificationService: NotificationService) {
     }
 
     public updateFlightMap(map: FlightPassengersMap[]): void {
@@ -61,7 +62,7 @@ export class EventService {
 
         const existingPassenger = flightMap.passengers.find(f => f.id == passenger.id);
         if (!existingPassenger) {
-            console.log(`Can't find passenger '${passenger.id}' on flight '${flightId}'...`);
+            this.notificationService.warn(`Can't board passenger '${passenger.name}'. Passenger is not on flight '${flightId}'...`);
             return;
         }
 
@@ -75,7 +76,7 @@ export class EventService {
     private getFlightMap(flightId: string): FlightPassengersMap | undefined {
         const flightMap = this._flightMap.get(flightId);
         if (!flightMap) {
-            console.log(`Flight with id '${flightId}' doesn't exist.`);
+            this.notificationService.warn(`Flight with id '${flightId}' does not exist!`);
             return undefined;
         }
 

@@ -18,6 +18,7 @@ import { FlightService } from './flights/services/flight-service';
 import { PassengerService } from './passengers/services/passenger.service';
 import { PassengerPublicService } from './passengers/services/passenger-public..service';
 import { EventService } from './events/event.service';
+import { NotificationModule } from './notifications/notification.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { EventService } from './events/event.service';
     MatGridListModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NotificationModule
   ],
   exports: [
     MatButtonModule,

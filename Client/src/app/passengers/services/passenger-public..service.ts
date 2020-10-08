@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NotificationService } from 'src/app/notifications/notification.service';
 import { BaseResponseModel } from 'src/app/shared/models/baseResponseModel';
 import { CreatePassengerModel } from '../models/createPassengerModel';
 import { CreatePassengerResponseModel } from '../models/createPassengerResponseModel';
@@ -12,7 +13,9 @@ import { PassengerService } from './passenger.service';
 })
 export class PassengerPublicService implements PassengerService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private notificationService: NotificationService) { }
 
   async createPassenger(createPassengerModel: CreatePassengerModel): Promise<CreatePassengerResponseModel> {
     try {
@@ -21,12 +24,12 @@ export class PassengerPublicService implements PassengerService {
 
       if (response.success) {
         return response;
-      } else {
-        // TODO: Notify some error service
-        return null;
       }
+
+      this.notificationService.error(`Failed to create passenger '${createPassengerModel.name}', reason: ${response.error}`);
+      return null;
     } catch (error) {
-      //TODO: Notify some error service
+      this.notificationService.error(`Failed to create passenger '${createPassengerModel.name}'. Check logs for further info.`);
       console.log(`Failed to create passenger: '${createPassengerModel.name}', error: ${error}`);
       return null;
     }
@@ -39,45 +42,23 @@ export class PassengerPublicService implements PassengerService {
 
       if (response.success) {
         return response;
-      } else {
-        //TODO: Notify some error service
-        return null;
       }
-    } catch (error) {
-      //TODO: Notify some error service
-      console.log(`Failed to update passenger: '${passenger.name}', error: ${error}`);
+
+      this.notificationService.error(`Failed to update passenger '${passenger.name}', reason: ${response.error}`);
       return null;
-    }
-  }
-
-  async deletePassenger(id: string): Promise<BaseResponseModel> {
-    try {
-      const options = { params: new HttpParams().set('id', id) };
-
-      const response = await this.httpClient.delete<BaseResponseModel>(`${PASSENGER_BASE_URL}`, options)
-        .toPromise();
-
-      if (response.success) {
-        return response;
-      } else {
-        //TODO: Notify some error service
-        return null;
-      }
     } catch (error) {
-      //TODO: Notify some error service
-      console.log(`Failed to delete passenger with id: '${id}', error: ${error}`);
+      this.notificationService.error(`Failed to update passenger '${passenger.name}'. Check logs for further info.`);
+      console.log(`Failed to update passenger: '${passenger.name}', error: ${error}`);
       return null;
     }
   }
 
   async getAllPassengersForFlight(flightId: string): Promise<Passenger[]> {
     try {
-      const response = await this.httpClient.get<Passenger[]>(`${PASSENGER_BASE_URL}/${GET_ALL_PASSENGERS_FOR_FLIGHT_ENDPOINT}/${flightId}`)
+      return await this.httpClient.get<Passenger[]>(`${PASSENGER_BASE_URL}/${GET_ALL_PASSENGERS_FOR_FLIGHT_ENDPOINT}/${flightId}`)
         .toPromise();
-
-      return response;
     } catch (error) {
-      // TODO: Notify some error service
+      this.notificationService.error(`Failed to list all passengers for flight '${flightId}'. Check logs for further info.`);
       console.log(`Failed to get all passengers for flight ${flightId}: ${error}`);
       return null;
     }
@@ -85,12 +66,10 @@ export class PassengerPublicService implements PassengerService {
 
   async getPassengerById(id: string): Promise<Passenger> {
     try {
-      const response = await this.httpClient.get<Passenger>(`${PASSENGER_BASE_URL}/${id}`)
+      return await this.httpClient.get<Passenger>(`${PASSENGER_BASE_URL}/${id}`)
         .toPromise();
-
-      return response;
     } catch (error) {
-      // TODO: Notify some error service
+      this.notificationService.error(`Failed to get passenger with id '${id}'. Check logs for further info.`);
       console.log(`Failed to get passenger: ${error}`);
       return null;
     }

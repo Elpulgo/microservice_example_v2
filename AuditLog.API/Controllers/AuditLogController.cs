@@ -32,7 +32,7 @@ namespace AuditLog.API.Controllers
             => Ok((await GetAllPassengers()));
 
         [HttpGet("all")]
-        public async Task<IActionResult> Test()
+        public async Task<IActionResult> GetAll()
         {
             var passengers = await GetAllPassengers();
             var flights = await GetAllFlights();

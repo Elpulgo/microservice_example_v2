@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { EventService } from 'src/app/events/event.service';
+import { NotificationService } from 'src/app/notifications/notification.service';
 import { CreateFlightModel } from '../models/createFlightModel';
 import { FlightService } from '../services/flight-service';
 
@@ -13,19 +15,21 @@ export class CreateFlightComponent implements OnInit {
   public flightOrigin: string;
   public flightDestination: string;
 
-  public isVisible: boolean = false;
+  public isVisible: boolean = true;
 
-  constructor(private flightService: FlightService) { }
+  constructor(
+    private flightService: FlightService,
+    private eventService: EventService,
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
   }
 
   public async createFlight(): Promise<void> {
-
-    // TODO: Call flight service.. Then pass event to flight-list to read flights when getting OK back from server
-    console.log(this.flightDestination);
-    console.log(this.flightOrigin);
-    console.log(this.flightNumber);
+    if (!this.validateInput()) {
+      this.notificationService.warn("Field for flight can't be empty!");
+      return;
+    }
 
     const newFlight: CreateFlightModel = {
       origin: this.flightOrigin,
@@ -35,14 +39,12 @@ export class CreateFlightComponent implements OnInit {
 
     const response = await this.flightService.createFlight(newFlight);
 
-    if (response == null || !response.success) {
-      console.log("apparently failed..");
-      console.log(`Error: ${response.error}`);
-      console.log(`Stacktrace: ${response.stacktrace}`);
-    } else {
-      console.log(`succeded! id: ${response.id}`);
-      this.clearInput();
-    }
+    if (response == null || !response.success)
+      return;
+
+      // this.eventService.
+    this.notificationService.success(`Flight '${this.flightNumber}' was created`);
+    this.clearInput();
   }
 
   public toggleCreateFlight(): void {
@@ -53,5 +55,16 @@ export class CreateFlightComponent implements OnInit {
     this.flightNumber = "";
     this.flightOrigin = "";
     this.flightDestination = "";
+  }
+
+  private validateInput(): boolean {
+    if (!this.flightNumber || this.flightNumber === "")
+      return false;
+    if (!this.flightOrigin || this.flightOrigin === "")
+      return false;
+    if (!this.flightDestination || this.flightDestination === "")
+      return false;
+
+    return true;
   }
 }
