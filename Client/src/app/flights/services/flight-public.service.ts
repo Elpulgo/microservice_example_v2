@@ -87,11 +87,20 @@ export class FlightPublicService implements FlightService {
 
   async getAllFlights(): Promise<Flight[]> {
     try {
-      const response = await this.httpClient.get<Flight[]>(FLIGHT_BASE_URL).toPromise();
-      return response;
+      return await this.httpClient.get<Flight[]>(FLIGHT_BASE_URL).toPromise();
     } catch (error) {
       this.notificationService.error(`Failed to list flights. Check logs for further info.`);
       console.log(`Failed to get all flights: ${error}`);
+      return null;
+    }
+  }
+
+  async getFlight(id: string): Promise<Flight> {
+    try {
+      return await this.httpClient.get<Flight>(`${FLIGHT_BASE_URL}/${id}`).toPromise();
+    } catch (error) {
+      this.notificationService.error(`Failed to get flight. Check logs for further info.`);
+      console.log(`Failed to get flight: ${error}`);
       return null;
     }
   }

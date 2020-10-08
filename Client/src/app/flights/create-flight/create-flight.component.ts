@@ -42,7 +42,7 @@ export class CreateFlightComponent implements OnInit {
     if (response == null || !response.success)
       return;
 
-      // this.eventService.
+    this.eventService.flightCreated(response.id);
     this.notificationService.success(`Flight '${this.flightNumber}' was created`);
     this.clearInput();
   }

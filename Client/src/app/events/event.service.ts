@@ -9,16 +9,39 @@ import { PassengerStatus } from '../passengers/models/passengerStatus';
 import { FlightStatus } from '../flights/models/flightStatus';
 import { FlightDeletedEvent } from './flightDeletedEvent';
 import { NotificationService } from '../notifications/notification.service';
+import { FlightCreatedEvent } from './flightCreatedEvent';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class EventService {
 
-    public allPassengersBoardedForFlight$: EventEmitter<AllPassengersBoardedEvent> = new EventEmitter<AllPassengersBoardedEvent>();
-    public flightDisembarked$: EventEmitter<FlightDisembarkedEvent> = new EventEmitter<FlightDisembarkedEvent>();
-    public flightArrived$: EventEmitter<FlightArrivedEvent> = new EventEmitter<FlightArrivedEvent>();
-    public flightDeleted$: EventEmitter<FlightDeletedEvent> = new EventEmitter<FlightDeletedEvent>();
+    private _allPassengersBoardedForFlight$: EventEmitter<AllPassengersBoardedEvent> = new EventEmitter<AllPassengersBoardedEvent>();
+    private _flightDisembarked$: EventEmitter<FlightDisembarkedEvent> = new EventEmitter<FlightDisembarkedEvent>();
+    private _flightArrived$: EventEmitter<FlightArrivedEvent> = new EventEmitter<FlightArrivedEvent>();
+    private _flightDeleted$: EventEmitter<FlightDeletedEvent> = new EventEmitter<FlightDeletedEvent>();
+    private _flightCreated$: EventEmitter<FlightCreatedEvent> = new EventEmitter<FlightCreatedEvent>();
+
+    public get allPassengersBoardedForFlight$(): EventEmitter<AllPassengersBoardedEvent> {
+        return this._allPassengersBoardedForFlight$;
+    }
+
+    public get flightDisembarked$(): Observable<FlightDisembarkedEvent> {
+        return this._flightDisembarked$.asObservable();
+    }
+
+    public get flightArrived$(): Observable<FlightArrivedEvent> {
+        return this._flightArrived$.asObservable();
+    }
+
+    public get flightDeleted$(): Observable<FlightDeletedEvent> {
+        return this._flightDeleted$.asObservable();
+    }
+
+    public get flightCreated$(): Observable<FlightCreatedEvent> {
+        return this._flightCreated$.asObservable();
+    }
 
     private _flightMap: Map<string, FlightPassengersMap> = new Map<string, FlightPassengersMap>();
 
@@ -34,25 +57,29 @@ export class EventService {
 
         for (const flightMap of map) {
             if (flightMap.flight.status === FlightStatus.AllBoarded) {
-                this.allPassengersBoardedForFlight$.emit({ flightId: flightMap.flight.id });
+                this._allPassengersBoardedForFlight$.emit({ flightId: flightMap.flight.id });
             } else if (flightMap.flight.status === FlightStatus.Disembarked) {
-                this.flightDisembarked$.emit({ flightId: flightMap.flight.id });
+                this._flightDisembarked$.emit({ flightId: flightMap.flight.id });
             } else if (flightMap.flight.status === FlightStatus.Arrived) {
-                this.flightArrived$.emit({ flightId: flightMap.flight.id });
+                this._flightArrived$.emit({ flightId: flightMap.flight.id });
             }
         }
     }
 
     public flightDisembarked(flight: Flight): void {
-        this.flightDisembarked$.emit({ flightId: flight.id });
+        this._flightDisembarked$.emit({ flightId: flight.id });
     }
 
     public flightArrived(flight: Flight): void {
-        this.flightArrived$.emit({ flightId: flight.id });
+        this._flightArrived$.emit({ flightId: flight.id });
     }
 
     public flightDeleted(flight: Flight): void {
-        this.flightDeleted$.emit({ flightId: flight.id });
+        this._flightDeleted$.emit({ flightId: flight.id });
+    }
+
+    public flightCreated(flightId: string): void {
+        this._flightCreated$.emit({ flightId });
     }
 
     public passengerBoarded(passenger: Passenger, flightId: string): void {
@@ -69,7 +96,7 @@ export class EventService {
         existingPassenger.status = passenger.status;
 
         if (this.hasAllPassengersBoarded(flightId)) {
-            this.allPassengersBoardedForFlight$.emit({ flightId });
+            this._allPassengersBoardedForFlight$.emit({ flightId });
         }
     }
 
