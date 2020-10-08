@@ -12,9 +12,7 @@ namespace Shared.Infrastructure.Events
         private readonly IEventStoreContext m_EventStoreContext;
 
         public EventStorePublisher(IEventStoreContext eventStoreContext)
-        {
-            m_EventStoreContext = eventStoreContext ?? throw new ArgumentNullException(nameof(eventStoreContext));
-        }
+            => m_EventStoreContext = eventStoreContext ?? throw new ArgumentNullException(nameof(eventStoreContext));
 
         public async Task Publish(IEventData<T> eventData)
         {

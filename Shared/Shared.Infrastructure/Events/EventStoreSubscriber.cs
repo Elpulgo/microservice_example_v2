@@ -30,11 +30,8 @@ namespace Shared.Infrastructure.Events
         public async Task Subscribe()
         {
             var settings = CreateSettings();
-            var succeeded = await CreatePersistentSubscriptionIfNotExistsAsync(settings);
-            if (!succeeded)
-            {
-                await ReplayEventsUpUntilCurrentStateAsync(settings);
-            }
+            await CreatePersistentSubscriptionIfNotExistsAsync(settings);
+            await ReplayEventsUpUntilCurrentStateAsync(settings);
 
             try
             {

@@ -27,7 +27,7 @@ namespace Shared.Infrastructure.RPC
             IConnectionListenerFactory connectionListenerFactory,
             int port)
         {
-            m_StreamJsonRpcServer = streamJsonRpcServer;
+            m_StreamJsonRpcServer = streamJsonRpcServer ?? throw new ArgumentNullException(nameof(streamJsonRpcServer));
             m_ConnectionListenerFactory = connectionListenerFactory ?? throw new ArgumentNullException(nameof(connectionListenerFactory));
             m_Port = port != 0 ? port : throw new ArgumentException($"{nameof(port)} can't be 0");
         }
