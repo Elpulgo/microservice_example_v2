@@ -1,1 +1,26 @@
-<p>auditlog works!</p>
+<table class="table" style="font-size:12px;">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Event id</th>
+            <th scope="col">Type</th>
+            <th scope="col">Name</th>
+            <th scope="col">Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let auditLog of auditLogs">
+            <th scope="row">{{auditLog.eventNumber}}</th>
+            <td>{{auditLog.metaData.timestamp}}</td>
+            <td>{{auditLog.eventId}}</td>
+            <td>{{auditLog.eventType}}</td>
+            <td>{{auditLog.metaData.eventName}}</td>
+            <td>
+                <pre>
+                    {{auditLog.data | json}}
+                </pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
