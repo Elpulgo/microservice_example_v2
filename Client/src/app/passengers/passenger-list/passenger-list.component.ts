@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { EventService } from 'src/app/events/event.service';
 import { FlightStatus } from 'src/app/flights/models/flightStatus';
+import { NotificationService } from 'src/app/notifications/notification.service';
 import { Passenger } from '../models/passenger';
 import { PassengerService } from '../services/passenger.service';
 
@@ -25,7 +26,8 @@ export class PassengerListComponent implements OnInit, OnDestroy {
 
   constructor(
     private passengerService: PassengerService,
-    private eventService: EventService) { }
+    private eventService: EventService,
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this._flightHasDisembarkedSubscription = this.eventService.flightDisembarked$
@@ -59,7 +61,9 @@ export class PassengerListComponent implements OnInit, OnDestroy {
     const response = await this.passengerService.createPassenger({ name: this.passengerName, flightId: this.flightId });
     if (response.success) {
       const passenger = await this.passengerService.getPassengerById(response.id);
-      this.passengers.push(passenger);
+      if (passenger != null) {
+        this.passengers.push(passenger);
+      }
     }
 
     this.clearInput();
@@ -75,7 +79,7 @@ export class PassengerListComponent implements OnInit, OnDestroy {
 
   private validateInput(): boolean {
     if (!this.passengerName || this.passengerName === "" || !this.flightId || this.flightId == "") {
-      alert("Passenger name/flight id can't be empty!");
+      this.notificationService.warn("Passenger name/flight id can't be empty!");
       return false;
     }
 

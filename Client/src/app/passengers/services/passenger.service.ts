@@ -8,7 +8,6 @@ import { Passenger } from '../models/passenger';
 export abstract class PassengerService {
     abstract async createPassenger(createPassengerModel: CreatePassengerModel): Promise<CreatePassengerResponseModel>;
     abstract async updatePassenger(passenger: Passenger): Promise<BaseResponseModel>;
-    abstract async deletePassenger(id: string): Promise<BaseResponseModel>;
     abstract async getAllPassengersForFlight(flightId: string): Promise<Passenger[]>;
     abstract async getPassengerById(id: string): Promise<Passenger>;
 }

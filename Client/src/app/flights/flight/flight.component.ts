@@ -5,6 +5,7 @@ import { FlightService } from '../services/flight-service';
 import { EventService } from 'src/app/events/event.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { NotificationService } from 'src/app/notifications/notification.service';
 
 @Component({
   selector: 'app-flight',
@@ -27,7 +28,8 @@ export class FlightComponent implements OnInit, OnDestroy {
 
   constructor(
     private flightService: FlightService,
-    public eventService: EventService) { }
+    public eventService: EventService,
+    private notificationService: NotificationService) { }
 
 
   ngOnInit(): void {
@@ -51,7 +53,7 @@ export class FlightComponent implements OnInit, OnDestroy {
 
   public async disembark(): Promise<void> {
     if (this.flight.status !== FlightStatus.AllBoarded) {
-      alert("All passengers has not yet boarded!");
+      this.notificationService.warn("All passengers has not yet boarded!");
       return;
     }
 
@@ -60,20 +62,20 @@ export class FlightComponent implements OnInit, OnDestroy {
     const flight = { ...this.flight, status: FlightStatus.Disembarked };
     const response = await this.flightService.updateFlight(flight);
 
-    if (response != null && response.success) {
-      this.flight = flight;
-      this.setButtonVisibility();
-      this.eventService.flightDisembarked(this.flight);
-    } else {
-      console.log("Failed to disembark flight!");
+    if (response == null || !response.success) {
+      this.isDisembarking = false;
+      return;
     }
 
+    this.flight = flight;
+    this.setButtonVisibility();
+    this.eventService.flightDisembarked(this.flight);
     this.isDisembarking = false;
   }
 
   public async land(): Promise<void> {
     if (this.flight.status !== FlightStatus.Disembarked) {
-      alert("Flight has not yet disembarked and can't land!");
+      this.notificationService.warn("Flight has not yet disembarked and can't land!");
       return;
     }
 
@@ -82,33 +84,32 @@ export class FlightComponent implements OnInit, OnDestroy {
     const flight = { ...this.flight, status: FlightStatus.Arrived };
     const response = await this.flightService.updateFlight(flight);
 
-    if (response != null && response.success) {
-      this.flight = flight;
-      this.setButtonVisibility();
-      this.eventService.flightArrived(this.flight);
-    } else {
-      console.log(`Failed to land flight!`);
+    if (response == null || !response.success) {
+      this.isLanding = false;
+      return;
     }
-
+    this.flight = flight;
+    this.setButtonVisibility();
+    this.eventService.flightArrived(this.flight);
     this.isLanding = false;
   }
 
   public async delete(): Promise<void> {
     if (this.flight.status !== FlightStatus.Arrived) {
-      alert("Flight has not yet arrived and can't be deleted!");
+      this.notificationService.warn("Flight has not yet arrived and can't be deleted!");
       return;
     }
 
     this.isDeleting = true;
 
     const response = await this.flightService.deleteFlight(this.flight.id);
-    if (response != null && response.success) {
-      this.eventService.flightDeleted(this.flight);
-    } else {
-      console.log("Failed to delete flight!");
+
+    if (response == null || !response.success) {
+      this.isDeleting = false;
+      return;
     }
 
-
+    this.eventService.flightDeleted(this.flight);
     this.isDeleting = false;
   }
 

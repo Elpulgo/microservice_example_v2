@@ -21,6 +21,18 @@ namespace Passengers.Application.Commands
         {
 
         }
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrEmpty(Name))
+                return false;
+            if (FlightId == Guid.Empty)
+                return false;
+            if (string.IsNullOrEmpty(FlightId.ToString()))
+                return false;
+
+            return true;
+        }
     }
 
     public class CreatePassengerHandler
@@ -36,6 +48,17 @@ namespace Passengers.Application.Commands
 
         public async Task<PassengerCommandResponse> Handle(CreatePassengerCommand request, CancellationToken cancellationToken)
         {
+            if (!request.IsValid())
+            {
+                return new PassengerCommandResponse(
+                    new CommandResponseBase()
+                    {
+                        Error = "Name and flight id can't be empty!",
+                        Success = false
+                    },
+                    Guid.Empty);
+            }
+
             var (flightExists, response) = await ValidateFlightExistsAsync(request.FlightId);
             if (!flightExists)
                 return response;

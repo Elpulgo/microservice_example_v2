@@ -33,12 +33,14 @@ export class PassengerComponent implements OnInit {
     let passenger: Passenger = { ...this.passenger, status: PassengerStatus.Boarded };
 
     const response = await this.passengerService.updatePassenger(passenger);
-    if (response != null && response.success) {
-      const passenger = await this.passengerService.getPassengerById(this.passenger.id);
-      this.passenger = passenger;
-      this.hasBoarded = true;
-      this.eventService.passengerBoarded(this.passenger, this.flightId);
-    }
+
+    if (response == null || !response.success)
+      return;
+
+    const updatedPassenger = await this.passengerService.getPassengerById(this.passenger.id);
+    this.passenger = updatedPassenger;
+    this.hasBoarded = true;
+    this.eventService.passengerBoarded(this.passenger, this.flightId);
   }
 
   private setBoardButtonEnabledMode(): void {

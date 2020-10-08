@@ -6,13 +6,16 @@ import { BaseResponseModel } from '../../shared/models/baseResponseModel';
 import { Flight } from '../models/flight';
 import { CreateFlightModel } from '../models/createFlightModel';
 import { FlightService } from './flight-service';
+import { NotificationService } from 'src/app/notifications/notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlightPublicService implements FlightService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private notificationService: NotificationService) {
   }
 
   async createFlight(createFlightModel: CreateFlightModel): Promise<CreateFlightResponseModel> {
@@ -25,10 +28,10 @@ export class FlightPublicService implements FlightService {
       if (response.success)
         return response;
 
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to create flight '${createFlightModel.flightNumber}', reason: ${response.error}.`);
       return null;
     } catch (error) {
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to create flight! '${createFlightModel.flightNumber}'. Check logs for further info.`);
       console.log(`Failed to create flight: '${error}'`);
       return null;
     }
@@ -44,10 +47,10 @@ export class FlightPublicService implements FlightService {
       if (response.success)
         return response;
 
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to update flight '${flight.flightNumber}', reason: ${response.error}.`);
       return null;
     } catch (error) {
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to update flight '${flight.flightNumber}'. Check logs for further info.`);
       console.log(`Failed to update flight: '${error}'`);
       return null;
     }
@@ -73,10 +76,10 @@ export class FlightPublicService implements FlightService {
       if (response.success)
         return response;
 
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to delete flight, reason: ${response.error}.`);
       return null;
     } catch (error) {
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to delete flight. Check logs for further info.`);
       console.log(`Failed to delete flight: '${error}'`);
       return null;
     }
@@ -87,7 +90,7 @@ export class FlightPublicService implements FlightService {
       const response = await this.httpClient.get<Flight[]>(FLIGHT_BASE_URL).toPromise();
       return response;
     } catch (error) {
-      // Else: notify some error service to display a message..
+      this.notificationService.error(`Failed to list flights. Check logs for further info.`);
       console.log(`Failed to get all flights: ${error}`);
       return null;
     }
