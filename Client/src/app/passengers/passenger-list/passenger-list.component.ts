@@ -60,6 +60,7 @@ export class PassengerListComponent implements OnInit, OnDestroy {
 
     const response = await this.passengerService.createPassenger({ name: this.passengerName, flightId: this.flightId });
     if (response.success) {
+      await this.delay(1000);
       const passenger = await this.passengerService.getPassengerById(response.id);
       if (passenger != null) {
         this.passengers.push(passenger);
@@ -89,5 +90,9 @@ export class PassengerListComponent implements OnInit, OnDestroy {
   private async reloadPassengers(): Promise<void> {
     const passengers = await this.passengerService.getAllPassengersForFlight(this.flightId);
     this.passengers = passengers;
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

@@ -42,6 +42,9 @@ export class CreateFlightComponent implements OnInit {
     if (response == null || !response.success)
       return;
 
+
+    await this.delay(1000);
+    
     this.eventService.flightCreated(response.id);
     this.notificationService.success(`Flight '${this.flightNumber}' was created`);
     this.clearInput();
@@ -66,5 +69,9 @@ export class CreateFlightComponent implements OnInit {
       return false;
 
     return true;
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
