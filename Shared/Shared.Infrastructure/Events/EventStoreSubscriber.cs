@@ -172,6 +172,11 @@ namespace Shared.Infrastructure.Events
                 Console.WriteLine($"Group with name '{m_GroupName}' already exists, won't create a new persistant subscription, but attach to existing.");
                 return false;
             }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"Failed to create persistent subscroption for '{m_GroupName}'. {exception.Message}.");
+                return false;
+            }
         }
 
         private PersistentSubscriptionSettings CreateSettings()
