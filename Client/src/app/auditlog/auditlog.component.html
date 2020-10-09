@@ -17,9 +17,7 @@
             <td>{{auditLog.eventType}}</td>
             <td>{{auditLog.metaData.eventName}}</td>
             <td>
-                <pre>
-                    {{auditLog.data | json}}
-                </pre>
+                <pre>{{auditLog.data | json}}</pre>
             </td>
         </tr>
     </tbody>
