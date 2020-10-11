@@ -1,0 +1,174 @@
+version: '3.5'
+
+x-EVENTSTORE_CONNECTION: 
+    &EVENTSTORE_CONNECTION
+    EVENTSTORE_CONNECTION=tcp://admin:changeit@eventstore:1113
+
+x-EVENTSTORE_FLIGHT_STREAM_NAME:
+    &EVENTSTORE_FLIGHT_STREAM_NAME
+    EVENTSTORE_FLIGHT_STREAM_NAME=event_flights
+
+x-EVENTSTORE_PASSENGER_STREAM_NAME:
+    &EVENTSTORE_PASSENGER_STREAM_NAME
+    EVENTSTORE_PASSENGER_STREAM_NAME=event_passengers
+
+x-POSTGRES_FLIGHT_DB_CONNECTION:
+    &POSTGRES_FLIGHT_DB_CONNECTION
+    POSTGRE_CONNECTION=Server=db-flights;Port=5432;Database=Flights;User Id=flights_user;Password=flights_user_pass;
+
+x-POSTGRES_PASSENGERS_DB_CONNECTION:
+    &POSTGRES_PASSENGERS_DB_CONNECTION
+    POSTGRE_CONNECTION=Server=db-passengers;Port=5432;Database=Passengers;User Id=passengers_user;Password=passengers_user_pass;
+
+services:
+    client:
+        restart: always
+        image: elpulgo/microservices_v2_client:latest
+        ports: 
+            - "80:80"
+        networks: 
+            - microservice
+
+    api-gateway:
+       restart: always
+       image: elpulgo/microservices_v2_api-gateway:latest
+       ports:
+           - "5000:80"
+       networks: 
+           - microservice
+
+    flights-api:
+        restart: always
+        image: elpulgo/microservices_v2_flights-api:latest
+        networks:
+            - microservice
+        environment:
+            - ASPNETCORE_URLS=http://+:8040
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_FLIGHT_DB_CONNECTION
+            - RPC_SERVER_PORT=8041
+            - PASSENGER_RPC_HOSTNAME=passengers-api
+            - PASSENGER_RPC_PORT=8051
+        depends_on: 
+            - eventstore
+            - db-flights
+
+    flights-processor:
+        restart: always
+        image: elpulgo/microservices_v2_flights-processor:latest
+        networks: 
+            - microservice
+        environment: 
+            - EVENTSTORE_SUBSCRIPTION_GROUP_NAME=subscribe_flights
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_FLIGHT_DB_CONNECTION
+        depends_on: 
+            - eventstore
+            - db-flights
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/processors/flights/data:/app/data"
+
+    passengers-api:
+        restart: always
+        image: elpulgo/microservices_v2_passengers-api:latest
+        networks:
+            - microservice
+        environment:
+            - ASPNETCORE_URLS=http://+:8050
+            - *EVENTSTORE_PASSENGER_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_PASSENGERS_DB_CONNECTION
+            - FLIGHT_RPC_HOSTNAME=flights-api
+            - FLIGHT_RPC_PORT=8041
+            - RPC_SERVER_PORT=8051
+        depends_on: 
+            - eventstore
+            - db-passengers
+
+    passengers-processor:
+        restart: always
+        image: elpulgo/microservices_v2_passengers-processor:latest
+        networks: 
+            - microservice
+        environment: 
+            - EVENTSTORE_SUBSCRIPTION_GROUP_NAME=subscribe_passengers
+            - *EVENTSTORE_PASSENGER_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+            - *POSTGRES_PASSENGERS_DB_CONNECTION
+        depends_on: 
+            - eventstore
+            - db-passengers
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/processors/passengers/data:/app/data"
+
+    auditlog-api:
+        restart: always
+        image: elpulgo/microservices_v2_auditlog-api:latest
+        networks:
+            - microservice
+        environment:
+            - ASPNETCORE_URLS=http://+:8080
+            - *EVENTSTORE_FLIGHT_STREAM_NAME
+            - *EVENTSTORE_PASSENGER_STREAM_NAME
+            - *EVENTSTORE_CONNECTION
+        depends_on: 
+            - eventstore
+    
+    eventstore:
+        image: eventstore/eventstore:5.0.8-xenial
+        restart: always
+        networks: 
+            - microservice
+        environment:
+            - EVENTSTORE_CLUSTER_SIZE=1
+            - EVENTSTORE_INT_TCP_PORT=1112
+            - EVENTSTORE_EXT_TCP_PORT=1113
+            - EVENTSTORE_INT_HTTP_PORT=2112
+            - EVENTSTORE_EXT_HTTP_PORT=2113
+            - EVENTSTORE_DB=/var/lib/eventstore-data
+            - EVENTSTORE_INDEX=/var/lib/eventstore-index
+            - EVENTSTORE_LOG=/var/log/eventstore
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/data:/var/lib/eventstore-data"
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/index:/var/lib/eventstore-index"
+            - "${HOME}/${DOCKER_REGISTRY}/eventstore/logs:/var/log/eventstore"
+        ports:
+            - "1112:1112"
+            - "1113:1113"
+            - "2112:2112"
+            - "2113:2113"
+    
+    db-flights:
+        image: postgres:13-alpine
+        restart: always
+        networks: 
+            - microservice
+        environment: 
+            - POSTGRES_USER=flights_user
+            - POSTGRES_PASSWORD=flights_user_pass
+            - POSTGRES_DB=Flights
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/postgres/flights:/var/lib/postgresql/data"
+            - ./DbScript/flights_init.sql:/docker-entrypoint-initdb.d/init.sql
+        command: -p 5432
+    
+    db-passengers:
+        image: postgres:13-alpine
+        restart: always
+        networks: 
+            - microservice
+        environment: 
+            - POSTGRES_USER=passengers_user
+            - POSTGRES_PASSWORD=passengers_user_pass
+            - POSTGRES_DB=Passengers
+        volumes:
+            - "${HOME}/${DOCKER_REGISTRY}/postgres/passengers:/var/lib/postgresql/data"
+            - ./DbScript/passengers_init.sql:/docker-entrypoint-initdb.d/init.sql
+        command: -p 5432
+    
+
+networks:
+    microservice:
+        driver: bridge
