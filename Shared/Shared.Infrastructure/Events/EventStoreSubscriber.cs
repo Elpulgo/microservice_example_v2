@@ -7,11 +7,13 @@ using Shared.Core.Constants;
 using Shared.Infrastructure.Data;
 using System.Text.Json;
 using EventStore.ClientAPI.Common;
+using System.Threading;
 
 namespace Shared.Infrastructure.Events
 {
     public class EventStoreSubscriber<T> : IEventStoreSubscriber<T>
     {
+        private const int MaxConnectionRetries = 10;
         private readonly IEventStoreContext m_Context;
         private readonly IWriteRepository<T> m_WriteRepository;
         private readonly string m_GroupName;
@@ -90,7 +92,7 @@ namespace Shared.Infrastructure.Events
 
                 streamEventsSlice = await m_Context.Connection.ReadStreamEventsForwardAsync(
                     stream: m_Context.EventStreamName,
-                    start: lastProcessedEvent + 1,
+                    start: lastProcessedEvent,
                     count: batchSize,
                     resolveLinkTos: true,
                     userCredentials: new UserCredentials(
@@ -153,30 +155,44 @@ namespace Shared.Infrastructure.Events
             return (true, string.Empty);
         }
 
-        private async Task<bool> CreatePersistentSubscriptionIfNotExistsAsync(PersistentSubscriptionSettings settings)
+        private async Task CreatePersistentSubscriptionIfNotExistsAsync(PersistentSubscriptionSettings settings)
         {
-            try
-            {
-                await m_Context.Connection.CreatePersistentSubscriptionAsync(
-                    m_Context.EventStreamName,
-                    m_GroupName,
-                    settings,
-                    new UserCredentials(
-                        m_Context.Credentials.User,
-                        m_Context.Credentials.Password));
+            bool success = false;
+            int retries = 0;
 
-                return true;
-            }
-            catch (InvalidOperationException)
+            do
             {
-                Console.WriteLine($"Group with name '{m_GroupName}' already exists, won't create a new persistant subscription, but attach to existing.");
-                return false;
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine($"Failed to create persistent subscroption for '{m_GroupName}'. {exception.Message}.");
-                return false;
-            }
+                retries++;
+
+                try
+                {
+                    await m_Context.Connection.CreatePersistentSubscriptionAsync(
+                        m_Context.EventStreamName,
+                        m_GroupName,
+                        settings,
+                        new UserCredentials(
+                            m_Context.Credentials.User,
+                            m_Context.Credentials.Password));
+
+                    success = true;
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.WriteLine($"Group with name '{m_GroupName}' already exists, won't create a new persistant subscription, but attach to existing.");
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine($"Failed to create persistent subscription for '{m_GroupName}'. {exception.Message}.");
+                }
+                finally
+                {
+                    if (!success || retries < MaxConnectionRetries)
+                    {
+                        Console.WriteLine($"Failed to create persistant subscription, try {retries} / {MaxConnectionRetries}...");
+                        Thread.Sleep(1000);
+                    }
+                }
+            } while (!success || retries < MaxConnectionRetries);
         }
 
         private PersistentSubscriptionSettings CreateSettings()
