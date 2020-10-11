@@ -63,12 +63,15 @@ The project is structured around the different domains, i.e 'Flights' and 'Passe
 Each domain uses generic implementations from a shared dependency, like database connections/operations, RPC server host/client and operations, 
 event store connections/operations.
 
-Each domain is structured with the same template
-- x.API             NetCore webapi, which host the server for the specified domain
-- x.Application     CQRS related logic, commands, queries, RPC implementations etc.
-- x.Core            Models, extensions, repository interfaces, mappings, events
-- x.Infrastructure  Event store related implementations, read/write database repository implementations
-- x.Processor       Worker for handling subscriptions from event store
+Each domain is structured with the same template: 
+
+| Suffix| Content |
+| :--- | :----- |
+| API | NetCore webapi, which host the server for the specified domain |
+| Application | CQRS related logic, commands, queries, RPC implementations etc. |
+| Core | Models, extensions, repository interfaces, mappings, events |
+| Infrastructure | Event store related implementations, read/write database repository implementations |
+| Processor | Worker for handling subscriptions from event store |
 
 Images provided by me can be found on docker hub, and in the root directory there is a docker-compose.prod.yml to be used if you 
 don't want to use the source code.
